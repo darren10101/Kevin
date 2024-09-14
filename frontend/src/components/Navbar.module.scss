@@ -43,6 +43,17 @@
       color: #D4D4D4;
       font-size: 1.1rem;
     }
+    svg {
+      margin-right: 0.5rem;
+      fill: #D4D4D4;
+      height: 1.5rem;
+      width: auto;
+      transition: 0.3s ease;
+      cursor: pointer;
+      &:hover {
+        fill: #337db6;
+      }
+    }
   }
   div.kevin, div.recording {
     cursor: pointer;
@@ -57,7 +68,7 @@
     transition: 0.3s ease;
     svg {
       fill: #D4D4D4;
-      height: 1.9rem;
+      height: 1.5rem;
       width: auto;
       transition: 0.3s ease;
     }

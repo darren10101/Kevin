@@ -1,0 +1,17 @@
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - target: 80
+        published: 8080
+        protocol: tcp
+        mode: ingress
+    restart: always
+    networks:
+      - frontend-network
+
+networks:
+  frontend-network:
+    driver: bridge
