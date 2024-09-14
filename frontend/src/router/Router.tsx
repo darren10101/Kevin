@@ -20,11 +20,11 @@ export const Routes = ({signedIn}: RoutesProps) => {
     },
     {
       path: '/login',
-      element: signedIn?<Navigate to='/' />:<Login />
+      element: signedIn?<Navigate to='/dashboard' />:<Login />
     },
     {
       path: '/register',
-      element: signedIn?<Navigate to='/' />:<Register />
+      element: signedIn?<Navigate to='/dashboard' />:<Register />
     },
     {
       path: '/dashboard',
