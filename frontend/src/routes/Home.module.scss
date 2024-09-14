@@ -2,6 +2,7 @@
   height: calc(100vh - 4.5rem);
   width: 100%;
   display: grid;
+  overflow: hidden;
   grid-template-columns: 1fr 2fr;
   grid-template-rows: 1fr 1fr;
   grid-template-areas: "html preview" "css preview";
