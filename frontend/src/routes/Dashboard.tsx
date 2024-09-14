@@ -8,7 +8,7 @@ interface Project {
     user_id: string;
 }
 
-export const Dashboard = () => {
+const Dashboard = () => {
     const [projects, setProjects] = useState<Project[]>([]);
 
     useEffect(() => {
@@ -45,3 +45,5 @@ export const Dashboard = () => {
         </div>
     );
 }
+
+export default Dashboard;

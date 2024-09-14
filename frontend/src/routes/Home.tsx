@@ -2,7 +2,7 @@ import { useState } from 'react'
 import Editor from '@components/Editor'
 import styles from './Home.module.scss'
 
-export const Home = () => {
+const Home = () => {
   const [html, setHTML] = useState('')
   const [css, setCSS] = useState('')
   const [fullscreen, setFullscreen] = useState(false)
@@ -61,3 +61,5 @@ export const Home = () => {
     </div>
   </main>;
 }
+
+export default Home;
