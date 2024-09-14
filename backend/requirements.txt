@@ -1,0 +1,4 @@
+flask
+Pyrebase4
+pydantic
+urllib3
