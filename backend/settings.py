@@ -10,5 +10,8 @@ class FirebaseCredentials(BaseModel):
     appId: str = Field(default_factory=lambda: os.getenv("FIREBASE_APP_ID", ""))
     databaseURL: str = Field(default_factory=lambda: os.getenv("FIREBASE_DATABASE_URL", ""))
 
+class GroqCredentials(BaseModel):
+    apiKey: str = Field(default_factory=lambda: os.getenv("GROQ_API_KEY", ""))
+
 class Settings:
     firebase_credentials: FirebaseCredentials = FirebaseCredentials()
