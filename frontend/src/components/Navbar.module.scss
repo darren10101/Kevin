@@ -5,21 +5,18 @@
   padding: 0 0.7rem;
   height: 4.5rem;
   box-sizing: border-box;
-  border-bottom: 0.15rem solid #3b3b3b;
+  border-bottom: 0.15rem solid $secondary-grey;
   img {
     margin-top: 0.4rem;
     height: 3.5rem;
     width: auto;
   }
   .button {
-    box-shadow: #818181 0 0 0.2rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    box-shadow: $tertiary-grey 0 0 0.2rem;
     text-decoration: none;
-    color: #D4D4D4;
+    color: $white;
     font-size: 1.1rem;
-    background-color: #337db6;
+    background-color: $primary-blue;
     padding: 0.5rem 1.4rem;
     border-radius: 1.5rem;
     font-weight: 600;
@@ -31,34 +28,49 @@
       margin: 0 0 0 0.9rem;
     }
     &:hover {
-      background-color: #D4D4D4;
-      color: #337db6;
+      background-color: $white;
+      color: $primary-blue;
     }
   }
   div.menu {
     display: flex;
     align-items: center;
-    gap: 1.5rem;
-    span {
-      color: #D4D4D4;
-      font-size: 1.1rem;
+    gap: 1rem;
+    a {
+      text-decoration: none;
+      color: $white;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      border-radius: 50%;
+      img {
+        border-radius: 50%;
+        height: 2.4rem;
+        border: $secondary-grey 0.1rem solid;
+        transition: 0.3s ease;
+        margin: 0;
+        cursor: pointer;
+        &:hover {
+          border: $primary-blue 0.1rem solid;
+        }
+      }
     }
     svg {
       margin-right: 0.5rem;
-      fill: #D4D4D4;
+      fill: $white;
       height: 1.5rem;
       width: auto;
       transition: 0.3s ease;
       cursor: pointer;
       &:hover {
-        fill: #337db6;
+        fill: $primary-blue;
       }
     }
   }
   div.kevin, div.recording {
     cursor: pointer;
-    background-color: #3b3f42;
-    box-shadow: #818181 0 0 0.2rem;
+    background-color: $secondary-grey;
+    box-shadow: $tertiary-grey 0 0 0.2rem;
     padding: 0.5rem 1rem;
     border-radius: 1.5rem;
     font-size: 1.1rem;
@@ -67,7 +79,7 @@
     gap: 0.7rem;
     transition: 0.3s ease;
     svg {
-      fill: #D4D4D4;
+      fill: $white;
       height: 1.5rem;
       width: auto;
       transition: 0.3s ease;

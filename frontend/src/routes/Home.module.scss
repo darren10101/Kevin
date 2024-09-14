@@ -10,17 +10,17 @@
     box-sizing: border-box;
     height: 100%;
     overflow: auto;
-    background-color: #2E3235;
-    border-top: #48657a 0.2rem solid;
+    background-color: $primary-grey;
+    border-top: $secondary-blue 0.2rem solid;
     h3 {
-      background-color: #3b3f42;
+      background-color: $secondary-grey;
       padding: 0.2rem 0.6rem;
       margin: 0;
-      border-bottom:#2E3235 0.1rem solid;
+      border-bottom:$primary-grey 0.1rem solid;
     }
   }
   .preview {
-    border-left: #3b3f42 0.2rem solid;
+    border-left: $secondary-grey 0.2rem solid;
     grid-area: preview;
     display: block;
     position: relative;
@@ -33,13 +33,13 @@
       position: absolute;
       top: 1rem;
       right: 1rem;
-      fill: #D4D4D4;
+      fill: $white;
       height: 1.5rem;
       width: auto;
       transition: 0.3s ease;
       cursor: pointer;
       &:hover {
-        fill: #337db6;
+        fill: $primary-blue;
       }
     }
   }
@@ -59,13 +59,13 @@
       position: absolute;
       top: 1rem;
       right: 1rem;
-      fill: #D4D4D4;
+      fill: $white;
       height: 1.5rem;
       width: auto;
       transition: 0.3s ease;
       cursor: pointer;
       &:hover {
-        fill: #337db6;
+        fill: $primary-blue;
       }
     }
   }

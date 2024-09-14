@@ -1,19 +1,13 @@
 import styles from './Navbar.module.scss';
 import { auth } from '../firebase/client'
-import { GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth'
+import { signOut } from 'firebase/auth'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { useState } from 'react'
+import { Link } from 'react-router-dom';
 
 const Navbar = () => {
-  const [user, loading] = useAuthState(auth);
+  const [user] = useAuthState(auth);
   const [recording, setRecording] = useState(false);
-  const signIn = async () => {
-    const provider = new GoogleAuthProvider();
-    provider.setCustomParameters({   
-      prompt : "select_account "
-    });
-    await signInWithPopup(auth, provider);
-  }
   const signOutUser = async () => {
     await signOut(auth);
   }
@@ -35,14 +29,14 @@ const Navbar = () => {
         </svg>
       </div>
       <div className={styles.menu}>
-        <span>{user.displayName || 'User'}</span>
+        <Link to='/dashboard'>{ user.displayName ?? user.email}</Link>
         <div className={styles.button} onClick={signOutUser} >
           Logout
         </div>
       </div>
       </>
       :
-      <div className={styles.button} onClick={signIn}>Sign up with <img src="/google.svg" alt="google" /></div>
+      <Link className={styles.button} to='/login'>Sign up</Link>
     }
   </nav>;
 }
