@@ -4,11 +4,15 @@ import Login from '@routes/Login';
 import Register from '@routes/Register';
 import Dashboard from '@routes/Dashboard';
 
-export const Routes = () => {
+interface RoutesProps {
+  signedIn: boolean;
+}
+
+export const Routes = ({signedIn}: RoutesProps) => {
   const routes = useRoutes([
     {
       path: '*',
-      element: <Navigate to="/" replace />
+      element: <Navigate to='/' replace />
     },
     {
       path: '/',
@@ -16,15 +20,15 @@ export const Routes = () => {
     },
     {
       path: '/login',
-      element: <Login />
+      element: signedIn?<Navigate to='/' />:<Login />
     },
     {
       path: '/register',
-      element: <Register />
+      element: signedIn?<Navigate to='/' />:<Register />
     },
     {
       path: '/dashboard',
-      element: <Dashboard />
+      element: signedIn?<Dashboard />:<Navigate to='/login' />
     }
   ]);
   return <>{routes}</>;
