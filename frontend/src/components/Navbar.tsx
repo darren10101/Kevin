@@ -3,6 +3,7 @@ import { auth } from '../firebase/client'
 import { GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { useState } from 'react'
+import Dictaphone from './Dictaphone';
 
 const Navbar = () => {
   const [user, loading] = useAuthState(auth);
@@ -43,7 +44,9 @@ const Navbar = () => {
       </>
       :
       <div className={styles.button} onClick={signIn}>Sign up with <img src="/google.svg" alt="google" /></div>
+      
     }
+    <Dictaphone />
   </nav>;
 }
 
