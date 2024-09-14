@@ -1,12 +1,32 @@
 from llm.prompts import Prompts
 from groq import Groq
 from settings import Settings
-
+import base64
 class GroqGenerator:
     def __init__(self):
         groq_settings = Settings().groq_credentials
         self.system_prompt = Prompts().system
         self.client = Groq(api_key=groq_settings.apiKey)
+
+    def describe(self, base64_image):
+        chat_completion = self.client.chat.completions.create(
+            messages=[
+                {
+                    "role": "user",
+                    "content": [
+                        {"type": "text", "text": Prompts().describe},
+                        {
+                            "type": "image_url",
+                            "image_url": {
+                                "url": f"data:image/jpeg;base64,{base64_image}",
+                            },
+                        },
+                    ],
+                }
+            ],
+            model="llava-v1.5-7b-4096-preview",
+        )
+        return chat_completion.choices[0].message.content
 
     def generate(self, prompt):
         messages = [
@@ -42,3 +62,11 @@ class GroqGenerator:
 
 # res = groq_generator.generate(prompt)
 # print(res)
+# def encode_image(image_path):
+#   with open(image_path, "rb") as image_file:
+#     return base64.b64encode(image_file.read()).decode('utf-8')
+  
+# image_path = "llm/test.png"
+# base64_image = encode_image(image_path)
+# with open("test.txt", "w") as file:
+#     file.write(base64_image)

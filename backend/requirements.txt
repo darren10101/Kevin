@@ -4,3 +4,4 @@ pydantic
 urllib3
 groq
 python-dotenv
+flask_cors
