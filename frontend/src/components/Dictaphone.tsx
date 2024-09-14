@@ -2,7 +2,6 @@ import useSpeechRecognition from '../hooks/useSpeechRecognitionHook'
 
 const Dictaphone = () => {
     const {
-        text,
         isListening,
         startListening,
         stopListening,
@@ -25,7 +24,7 @@ const Dictaphone = () => {
                     </div>
 
                     {isListening ? <div>listening</div> : null}
-                    {text}
+                    
                 </>) : (
                 <span>Speech Recognition Not Supported</span>
             )}
