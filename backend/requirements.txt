@@ -2,3 +2,5 @@ flask
 Pyrebase4
 pydantic
 urllib3
+groq
+python-dotenv
