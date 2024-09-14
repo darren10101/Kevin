@@ -5,7 +5,7 @@ import { useAuthState } from 'react-firebase-hooks/auth'
 import { useState } from 'react'
 
 const Navbar = () => {
-  const [user, loading] = useAuthState(auth);
+  const [user] = useAuthState(auth);
   const [recording, setRecording] = useState(false);
   const signIn = async () => {
     const provider = new GoogleAuthProvider();
