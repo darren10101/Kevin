@@ -15,3 +15,4 @@ class GroqCredentials(BaseModel):
 
 class Settings:
     firebase_credentials: FirebaseCredentials = FirebaseCredentials()
+    groq_credentials: GroqCredentials = GroqCredentials()
