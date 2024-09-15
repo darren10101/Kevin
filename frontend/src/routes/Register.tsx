@@ -17,13 +17,13 @@ const Register = () => {
       const token = localStorage.getItem('token');
       if (token) {
         try {
-          const response = await axios.get('http://localhost:5000/user/verify', {
+          const response = await axios.get('http://127.0.0.1:5000/user/verify', {
             headers: {
               Authorization: `Bearer ${token}`
             }
           });
           if (response.status === 200) {
-            navigate('/dashboard');
+            window.location.reload();
           }
         } catch (error) {
           console.error('Error verifying token:', error);
@@ -44,7 +44,7 @@ const Register = () => {
     } else { 
       try {
         console.log(username, email, password);
-        const response = await axios.post('http://localhost:5000/user/signup', {
+        const response = await axios.post('http://127.0.0.1:5000/user/signup', {
           email,
           password,
           username

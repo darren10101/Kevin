@@ -16,13 +16,13 @@ const Login = () => {
       const token = localStorage.getItem('token');
       if (token) {
         try {
-          const response = await axios.get('http://localhost:5000/user/verify', {
+          const response = await axios.get('http://127.0.0.1:5000/user/verify', {
             headers: {
               Authorization: `Bearer ${token}`
             }
           });
           if (response.status === 200) {
-            navigate('/dashboard');
+            window.location.reload();
           }
         } catch (error) {
           console.error('Error verifying token:', error);
@@ -42,14 +42,14 @@ const Login = () => {
       setEmail("");
     } else {
       try {
-        const response = await axios.post('http://localhost:5000/user/login', {
+        const response = await axios.post('http://127.0.0.1:5000/user/login', {
           email,
           password
         });
         if (response.status === 200) {
           // Save the JWT token in local storage
           localStorage.setItem('token', response.data.token);
-          navigate('/dashboard');
+          window.location.reload();
         }
       } catch (error) {
         if (axios.isAxiosError(error) && error.response) {
