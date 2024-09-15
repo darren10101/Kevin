@@ -16,7 +16,7 @@ const Navbar = ({path}: NavbarProps) => {
   useEffect(() => {
     const getUser = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/user/get-user', {
+        const response = await axios.get('http://127.0.0.1:5000/user/get-user', {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
@@ -33,7 +33,7 @@ const Navbar = ({path}: NavbarProps) => {
 
   const signOutUser = async () => {
     try {
-      await axios.post('http://localhost:5000/user/logout', null, {
+      await axios.post('http://127.0.0.1:5000/user/logout', null, {
         withCredentials: true,
       });
       localStorage.removeItem('token');
