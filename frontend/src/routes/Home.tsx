@@ -122,7 +122,7 @@ const Home = () => {
   return (
     <main className={styles.main}>
       <div className={styles.editor}>
-        <h3><button onClick = {injectHtml2Canvas}> Test</button></h3>
+        <h3>HTML</h3>
         <div>
           <Editor lang="html" code={html} onChange={setHTML} />
         </div>
