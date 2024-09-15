@@ -49,7 +49,7 @@ const Login = () => {
         if (response.status === 200) {
           // Save the JWT token in local storage
           localStorage.setItem('token', response.data.token);
-          navigate('/dashboard');
+          window.location.reload();
         }
       } catch (error) {
         if (axios.isAxiosError(error) && error.response) {
