@@ -34,7 +34,7 @@ function prettifyHtml(htmlString: string) {
 
   return prettyHtml.trim();
 }
-function prettifyCss(cssString) {
+function prettifyCss(cssString: string) {
   let indentLevel = 0;
   const indentSize = 2;
   let prettyCss = '';
@@ -46,14 +46,14 @@ function prettifyCss(cssString) {
     .replace(/{/g, ' {\n') // Ensure each opening brace is followed by a newline
     .replace(/;/g, ';\n') // Ensure each property ends with a newline
     .split('\n') // Split the string by newlines for easier processing
-    .map((line) => line.trim()) // Trim each line to remove leading/trailing spaces
-    .filter((line) => line.length > 0); // Remove empty lines
+    .map((line: any) => line.trim()) // Trim each line to remove leading/trailing spaces
+    .filter((line: any) => line.length > 0); // Remove empty lines
 
   // Function to generate indentation string
-  const getIndent = (level) => ' '.repeat(level * indentSize);
+  const getIndent = (level: number) => ' '.repeat(level * indentSize);
 
   // Iterate through the tokens
-  tokens.forEach((token) => {
+  tokens.forEach((token: string) => {
     if (token.endsWith('}')) {
       // Decrease the indent level for closing braces
       indentLevel -= 1;

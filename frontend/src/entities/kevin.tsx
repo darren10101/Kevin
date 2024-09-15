@@ -8,6 +8,7 @@ const Kevin = forwardRef((props, ref) => {
     // ==================== Voice Recognition ====================
     const [transcript, setTranscript] = useState<string>("")
     const [listening, setListening] = useState<boolean>(false)
+    const [firstTime, setFirstTime] = useState<boolean>(true)
     const [isCapturing, setIsCapturing] = useState<boolean>(false)
     const isCapturingRef = useRef(isCapturing)
     const listeningRef = useRef(listening)
@@ -19,7 +20,7 @@ const Kevin = forwardRef((props, ref) => {
     useEffect(() => {
         setPromptString(transcript)
         const params = {
-            prompt: transcript,
+            prompt: transcript.replace("hey kevin", "").trim(),
             old_html: htmlString,
             old_css: cssString,
         };
@@ -34,6 +35,7 @@ const Kevin = forwardRef((props, ref) => {
                 }
               } 
             catch (error) {
+                setTranscript("")
                 console.error('Error generating code:', error);
             }
         };
@@ -42,8 +44,11 @@ const Kevin = forwardRef((props, ref) => {
         console.log("CAPTURE REF----", isCapturingRef.current)
         console.log(transcript)
         
-        sendGenerationRequest();
-
+        if (isCapturing && firstTime) {
+            setFirstTime(false)
+        } else if (!isCapturing && !firstTime) {
+            sendGenerationRequest()
+        }
         if (!listeningRef.current) {
             recognition?.stop()
         }
