@@ -10,6 +10,7 @@ import { auth } from './firebase/client'
 function App() {
   const location = useLocation()
   const [showNavbar, setShowNavbar] = useState(true)
+  const [path, setPath] = useState('')
   const [user] = useAuthState(auth)
   useEffect(() => {
     if (location.pathname === '/login' || location.pathname === '/register') {
@@ -17,10 +18,11 @@ function App() {
     } else {
       setShowNavbar(true)
     }
+    setPath(location.pathname)
     document.title = 'Frontend Kevin'
   }, [location.pathname])
   return <>
-    { showNavbar && <Navbar />}
+    { showNavbar && <Navbar path={path} />}
     <Routes signedIn={user?true:false} />
   </>
 }

@@ -46,6 +46,7 @@ const Navbar = () => {
     </Link>
     { 
     user ? <>
+      { path != '/dashboard' &&
       <div className={recording?styles.recording:styles.kevin} onClick={() => setRecording(!recording)}>
         Code with Kevin
         <svg height="80px" width="80px" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
@@ -56,7 +57,7 @@ const Navbar = () => {
             </g>
           </g>
         </svg>
-      </div>
+      </div> }
       <div className={styles.menu}>
         <Link to='/dashboard'>{ user['username'][Object.keys(user['username'])[0]] }</Link>
         <div className={styles.button} onClick={signOutUser} >
