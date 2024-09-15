@@ -120,11 +120,12 @@ def create_program():
         token = auth_header.split(' ')[1]
         user = auth.get_account_info(token)
         uid = user['users'][0]['localId']
-        id = 1
+        id = 0
         try:
             last_program = db.child("programs").child(uid).order_by_key().get().val()
             print(last_program)
-            id = len(last_program)
+            if (last_program):
+                id = len(last_program)
             program = {
                 "user_id": uid,
                 "name": "Untitled Program",
