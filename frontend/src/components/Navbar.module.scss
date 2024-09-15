@@ -6,6 +6,29 @@
   height: 4.5rem;
   box-sizing: border-box;
   border-bottom: 0.15rem solid $secondary-grey;
+  .newDoc {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    img {
+      height: 3rem;
+      width: auto;
+    }
+    input {
+      font-size: 1.2rem;
+      padding: 0.5rem 1rem;
+      border-radius: 1.5rem;
+      border: none;
+      background-color: $secondary-grey;
+      color: $white;
+      font-weight: 600;
+      transition: 0.3s ease;
+      &:focus {
+        background-color: $primary-grey;
+      }
+    }
+  }
   img {
     margin-top: 0.4rem;
     height: 3.5rem;

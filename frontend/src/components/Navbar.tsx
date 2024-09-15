@@ -8,9 +8,9 @@ interface NavbarProps {
 }
 
 const Navbar = ({path}: NavbarProps) => {
-  
   const [user, setUser] = useState('')
   const [recording, setRecording] = useState(false);
+  const [documentName, setDocumentName] = useState("Untitled Document");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -44,10 +44,27 @@ const Navbar = ({path}: NavbarProps) => {
     }
   }
 
+  const updateDocumentName = (e: any) => {
+    e.preventDefault();
+    console.log(documentName);
+  }
+
   return <nav className={styles.navbar}>
-    <Link to='/dashboard'>
-      <img src="/logo.png" alt="Frontend Kevin" />
-    </Link>
+    { path === '/document' ?
+      <div className={styles.newDoc}>
+        <Link to='/dashboard'>
+          <img src="/favicon.png" alt="Kevin" />
+        </Link>
+        <form onSubmit={(e) => updateDocumentName(e)}>
+
+          <input type="text" value={documentName} onChange={(e) => setDocumentName(e.target.value)}  />
+        </form>
+      </div>
+      :
+      <Link to='/dashboard'>
+        <img src="/logo.png" alt="Frontend Kevin" />
+      </Link>
+    }
     { 
     user ? <>
       { path != '/dashboard' &&
