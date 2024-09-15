@@ -14,7 +14,6 @@ interface EditorProps {
 const Editor = ({ className, lang, code, onChange }: EditorProps) => {  
   const handleChange = useCallback((value: string) => {
     onChange(value);
-    console.log(value);
   }, []);
 
   return <>

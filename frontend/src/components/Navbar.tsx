@@ -1,31 +1,59 @@
 import styles from './Navbar.module.scss';
-import { auth } from '../firebase/client'
-import { GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth'
-import { useAuthState } from 'react-firebase-hooks/auth'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
-const Navbar = () => {
-  const [user, loading] = useAuthState(auth);
+interface NavbarProps {
+  path: string;
+}
+
+const Navbar = ({path}: NavbarProps) => {
+  
+  const [user, setUser] = useState('')
   const [recording, setRecording] = useState(false);
-  const signIn = async () => {
-    const provider = new GoogleAuthProvider();
-    provider.setCustomParameters({   
-      prompt : "select_account "
-    });
-    await signInWithPopup(auth, provider);
-  }
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const getUser = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/user/get-user', {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+        console.log(response.data);
+        setUser(response.data);
+        navigate('/');
+      } catch (error) {
+        console.error('Error getting user:', error);
+      }
+    };
+    getUser();
+  }, []);
+
   const signOutUser = async () => {
-    await signOut(auth);
+    try {
+      await axios.post('http://localhost:5000/user/logout', null, {
+        withCredentials: true,
+      });
+      localStorage.removeItem('token');
+      setUser('');
+
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
   }
+
   return <nav className={styles.navbar}>
-    <div>
+    <Link to='/dashboard'>
       <img src="/logo.png" alt="Frontend Kevin" />
-    </div>
+    </Link>
     { 
     user ? <>
+      { path != '/dashboard' &&
       <div className={recording?styles.recording:styles.kevin} onClick={() => setRecording(!recording)}>
         Code with Kevin
-        <svg height="800px" width="800px" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" enableBackground="new 0 0 512 512">
+        <svg height="80px" width="80px" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
           <g>
             <g>
               <path d="m439.5,236c0-11.3-9.1-20.4-20.4-20.4s-20.4,9.1-20.4,20.4c0,70-64,126.9-142.7,126.9-78.7,0-142.7-56.9-142.7-126.9 0-11.3-9.1-20.4-20.4-20.4s-20.4,9.1-20.4,20.4c0,86.2 71.5,157.4 163.1,166.7v57.5h-23.6c-11.3,0-20.4,9.1-20.4,20.4 0,11.3 9.1,20.4 20.4,20.4h88c11.3,0 20.4-9.1 20.4-20.4 0-11.3-9.1-20.4-20.4-20.4h-23.6v-57.5c91.6-9.3 163.1-80.5 163.1-166.7z"/>
@@ -33,17 +61,16 @@ const Navbar = () => {
             </g>
           </g>
         </svg>
-      </div>
+      </div> }
       <div className={styles.menu}>
-        <span>{user.displayName || 'User'}</span>
+        <Link to='/dashboard'>{ user['username' as any][Object.keys(user['username' as any])[0] as any] }</Link>
         <div className={styles.button} onClick={signOutUser} >
           Logout
         </div>
       </div>
       </>
       :
-      <div className={styles.button} onClick={signIn}>Sign up with <img src="/google.svg" alt="google" /></div>
-      
+      <Link className={styles.button} to='/login'>Sign up</Link>
     }
   </nav>;
 }

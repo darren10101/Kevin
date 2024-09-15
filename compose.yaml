@@ -1,0 +1,32 @@
+services:
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - target: 80
+        published: 8080
+        protocol: tcp
+        mode: ingress
+    restart: always
+    networks:
+      - frontend-network
+
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - target: 5000
+        published: 5000
+        protocol: tcp
+        mode: ingress
+    restart: always
+    networks:
+      - backend-network
+      - frontend-network
+
+networks:
+  frontend-network:
+    driver: bridge
+
+  backend-network:
+    driver: bridge

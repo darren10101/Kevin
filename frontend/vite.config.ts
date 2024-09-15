@@ -12,5 +12,12 @@ export default defineConfig({
       "@assets" : path.resolve(__dirname, "./src/assets"),
       "@routes" : path.resolve(__dirname, "./src/routes"),
     },
+  },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        additionalData: `@import "./src/assets/variables.scss";`
+      }
+    }
   }
 })

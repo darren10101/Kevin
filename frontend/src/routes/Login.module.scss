@@ -1,0 +1,70 @@
+.main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+  & > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: $secondary-grey;
+    border: $primary-grey 0.15rem solid;
+    padding: 2rem 3rem;
+    border-radius: 1rem;
+
+    & > a > img {
+      height: 5rem;
+      width: auto;
+      margin-bottom: 1rem;
+    }
+    form {
+      width: 22rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      div.error {
+        background-color: rgba($primary-blue, 0.47);
+        width: fit-content;
+        padding: 0.8rem 1.2rem;
+        border-radius: 0.5rem;
+        border: 0.15rem solid $primary-blue;
+      }
+      a.forgot {
+        color: $white;
+        text-decoration: none;
+        font-size: 1rem;
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+      div.register {
+        a {
+          color: $white;
+          text-decoration: none;
+          font-weight: 600;
+          font-size: 1rem;
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+      button {
+        background-color: $primary-blue;
+        color: $white;
+        font-weight: 600;
+        border: $primary-blue 0.15rem solid;
+        border-radius: 0.5rem;
+        padding: 1rem 0;
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: 0.3s ease;
+        &:hover {
+          background-color: $white;
+          color: $primary-blue;
+        }
+      }
+    }
+  }
+}

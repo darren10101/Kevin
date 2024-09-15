@@ -1,26 +1,16 @@
 from flask import Flask, request, jsonify, session
-import pyrebase
+from flask_cors import CORS
 from settings import Settings
-from auth.routes import auth_routes
+from user.routes import user_routes
+from llm.routes import groq_routes
 
 app = Flask(__name__)
-
-settings = Settings()
-firebase_config = {
-    "apiKey": settings.firebase_credentials.apiKey,
-    "authDomain": settings.firebase_credentials.authDomain,
-    "projectId": settings.firebase_credentials.projectId,
-    "storageBucket": settings.firebase_credentials.storageBucket,
-    "messagingSenderId": settings.firebase_credentials.messagingSenderId,
-    "appId": settings.firebase_credentials.appId,
-    "databaseURL": settings.firebase_credentials.databaseURL
-}
-firebase = pyrebase.initialize_app(firebase_config)
-auth = firebase.auth()
-db = firebase.database()
+app.secret_key = 'welovekevin'
+CORS(app, supports_credentials=True)
 
 @app.route('/')
 def index():
     return "I'm Kevin!"
 
-app.register_blueprint(auth_routes, url_prefix='/auth')
+app.register_blueprint(user_routes, url_prefix='/user')
+app.register_blueprint(groq_routes, url_prefix='/llm')

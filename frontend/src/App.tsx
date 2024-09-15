@@ -10,6 +10,7 @@ const App: React.FC = () => {
     const [showNavbar, setShowNavbar] = useState(true)
     const [path, setPath] = useState('')
     const [user, setUser] = useState(true)
+
     useEffect(() => {
         const checkAuth = async () => {
             const token = localStorage.getItem('token');
@@ -46,6 +47,7 @@ const App: React.FC = () => {
     const [isCapturing, setIsCapturing] = useState<boolean>(false)
     const isCapturingRef = useRef(isCapturing)
     const listeningRef = useRef(listening)
+
 
     // SpeechRecognition instance, defined as optional since not all browsers support it
     let recognition: SpeechRecognition | null = null
@@ -144,6 +146,7 @@ const App: React.FC = () => {
     return <>
         {showNavbar && <Navbar path={path} />}
         <Routes signedIn={user} />
+        <button onClick={startListening}>Start Recording</button>
     </>
 };
 
