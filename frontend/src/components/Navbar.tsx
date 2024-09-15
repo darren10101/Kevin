@@ -46,6 +46,7 @@ const Navbar = ({path}: NavbarProps) => {
 
   const updateDocumentName = (e: any) => {
     e.preventDefault();
+    alert('Document name updated');
     console.log(documentName);
   }
 

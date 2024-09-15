@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Editor from '@components/Editor'
 import styles from './Home.module.scss'
 
@@ -6,7 +6,24 @@ const Document = () => {
   const [html, setHTML] = useState('')
   const [css, setCSS] = useState('')
   const [fullscreen, setFullscreen] = useState(false)
-  return <main className={styles.main}>
+
+  useEffect(() => {
+    const handleKeyDown = (event: any) => {
+      event.preventDefault();
+      const code = event.which || event.keyCode;
+
+      let charCode = String.fromCharCode(code).toLowerCase();
+      if ((event.ctrlKey || event.metaKey) && charCode === 's') {
+        alert('Project Saved');
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+return <main className={styles.main}>
     <div className={styles.editor}>
       <h3>HTML</h3>
       <div>
