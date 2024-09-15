@@ -4,11 +4,15 @@ import { Typewriter } from '@components/Typewriter';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-interface Project {
-    cssRaw: string;
-    htmlRaw: string;
-    title: string;
+interface ProjectDetails {
+    css: string;
+    html: string;
+    name: string;
     user_id: string;
+}
+
+interface Project {
+    [key: string]: ProjectDetails;
 }
 
 const Dashboard = () => {
@@ -16,6 +20,20 @@ const Dashboard = () => {
     const [user, setUser] = useState('');
     const navigate = useNavigate();
     useEffect(() => {
+        const getProjects = async () => {
+            try {
+                const response = await axios.get('http://127.0.0.1:5000/user/get-programs', {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
+                });
+                console.log(response.data);
+                setProjects(response.data);
+            }
+            catch(error){
+                console.log(error)
+            }
+        };
         const getUser = async () => {
           try {
             const response = await axios.get('http://127.0.0.1:5000/user/get-user', {
@@ -29,15 +47,9 @@ const Dashboard = () => {
             console.error('Error getting user:', error);
           }
         };
+        getProjects();
         getUser();
       }, []);
-
-    useEffect(() => {
-        fetch('http://127.0.0.1:5000/user/get-projects')
-            .then(response => response.json())
-            .then(data => setProjects(data))
-            .catch(error => console.log(error));
-    }, []);
 
     const handleNewProject = () => {
         navigate('/document');
@@ -56,24 +68,25 @@ const Dashboard = () => {
             </h1>
             <hr />
             <div className={styles.projects}>
-                {projects.map((project, index) => {
-                    return (
-                        <div key={index} className={styles.project}>
-                            <h3>{project.title}</h3>
+            {projects.map((project, index) => {
+                    console.log(index);
+                    return Object.entries(project).map(([key, value]) => (
+                        <div key={key} className={styles.project}>
+                            <h3>{value.name}</h3>
                             <iframe
                                 srcDoc={`
                                     <html>
                                         <head>
-                                            <style>${project.cssRaw}</style>
+                                            <style>${value.css}</style>
                                         </head>
                                         <body>
-                                            ${project.htmlRaw}
+                                            ${value.html}
                                         </body>
                                     </html>
                                 `}
                             />
                         </div>
-                    );
+                    ));
                 })}
                 <div className={styles.add} onClick={handleNewProject}>
                     <span>Add a project</span>

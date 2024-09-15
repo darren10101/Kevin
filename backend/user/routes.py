@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify, session
 import pyrebase
 from settings import Settings
+from flask_cors import cross_origin
 
 user_routes = Blueprint('auth', __name__)
 settings = Settings()
@@ -80,6 +81,7 @@ def get_user():
     return jsonify({'message': 'No token provided'}), 401
 
 @user_routes.route('/get-programs', methods=['GET'])
+@cross_origin()
 def get_programs():
     auth_header = request.headers.get('Authorization')
     if auth_header and auth_header.startswith("Bearer "):
@@ -161,11 +163,13 @@ def update_program():
         token = auth_header.split(' ')[1]
         user = auth.get_account_info(token)
         uid = user['users'][0]['localId']
-        program = {
-            "name": name,
-            "html": html,
-            "css": css
-        }
+        program = {}
+        if (name):
+            program['name'] = name
+        if (html):
+            program['html'] = html
+        if (css):
+            program['css'] = css
         try:
             db.child("programs").child(uid).child(id).child(oid).update(program)
             return jsonify({'message': 'Program updated successfully'}), 200
