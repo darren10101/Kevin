@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react'
 import styles from './Dashboard.module.scss'
 import { Typewriter } from '@components/Typewriter';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { auth } from '../firebase/client';
+import axios from 'axios';
 
 interface Project {
     cssRaw: string;
@@ -13,7 +12,23 @@ interface Project {
 
 const Dashboard = () => {
     const [projects, setProjects] = useState<Project[]>([]);
-    const [user] = useAuthState(auth);
+    const [user, setUser] = useState('');
+    useEffect(() => {
+        const getUser = async () => {
+          try {
+            const response = await axios.get('http://localhost:5000/user/get-user', {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+              },
+            });
+            console.log(response.data);
+            setUser(response.data);
+          } catch (error) {
+            console.error('Error getting user:', error);
+          }
+        };
+        getUser();
+      }, []);
 
     useEffect(() => {
         fetch('http://127.0.0.1:5000/user/get-projects')
@@ -26,7 +41,7 @@ const Dashboard = () => {
         <div className={styles.dashboard}>
             <h1>
                 <Typewriter
-                    text={`Hi ${user?user.displayName:"User"}, it's me Kevin!;What would you like to build today?`}
+                    text={`Hi ${user? user['username' as any][Object.keys(user['username' as any])[0] as any] :"User"}, it's me Kevin!;What would you like to build today?`}
                     typeSpeed={60}
                     deleteSpeed={30}
                     delay={2000}
