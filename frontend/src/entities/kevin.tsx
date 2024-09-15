@@ -15,11 +15,17 @@ const Kevin = forwardRef((props, ref) => {
     useEffect(() => {
         isCapturingRef.current = isCapturing
         console.log("CAPTURE REF----", isCapturingRef.current)
-        listeningRef.current = listening
         if (!listeningRef.current) {
             recognition?.stop()
         }
-    }, [isCapturing, listening])
+    }, [isCapturing])
+    useEffect(() => {
+        listeningRef.current = listening
+        console.log("LISTENING REF----", listeningRef.current)
+        if (!listeningRef.current) {
+            return
+        }
+    }, [listening])
 
     // Initialize the speech recognition object
     const initializeRecognition = () => {
@@ -75,36 +81,26 @@ const Kevin = forwardRef((props, ref) => {
     };
 
     // Start listening function
-    const startListening = () => {
-        console.log("Starting to listen")
-        setListening(true);
-        setTranscript("");
-        initializeRecognition()
-        if (!recognition) {
-            alert("Failed to initialize Speech Recognition");
-            return;
+    const toggleListening = () => {
+        console.log("toggled")
+        if (listeningRef.current) {
+            setListening(false);
+            recognition?.stop();
+        } else {
+            setListening(true);
+            setTranscript("");
+            initializeRecognition()
+            if (!recognition) {
+                alert("Failed to initialize Speech Recognition");
+                return;
+            }
+            recognition.start();
         }
-        recognition.start();
     };
-
-    // Stop listening function
-    const stopListening = () => {
-        setListening(false);
-        setTranscript("");
-        recognition?.stop();
-    }
     useImperativeHandle(ref, () => ({
-        startListening,
-        stopListening
-      }));
+        toggleListening
+    }));
     // Initialize the SpeechRecognition API when the component mounts
-    useEffect(() => {
-
-        return () => {
-            // Clean up: stop recognition when the component is unmounted
-            stopListening();
-        };
-    }, []);
     return (
         <div>
             <h1>Kevin</h1>

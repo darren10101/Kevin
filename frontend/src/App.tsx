@@ -45,16 +45,16 @@ function App() {
         setPath(location.pathname)
         document.title = 'Frontend Kevin'
     }, [location.pathname])
-    const kevinRef = useRef<{ startListening: () => void; stopListening: () => void } | null>(null);
+    const kevinRef = useRef<{ toggleListening: () => void } | null>(null);
 
-    const handleStartListening = () => {
+    const handleToggleListening = () => {
         if (kevinRef.current) {
-            console.log("Calling startListening");
-            kevinRef.current.startListening(); // Call startListening from Kevin component
+            console.log("calling toggle listening");
+            kevinRef.current.toggleListening(); // Call startListening from Kevin component
         }
     };
     return <>
-        {showNavbar && <Navbar path={path} toggleKevin={handleStartListening} />}
+        {showNavbar && <Navbar path={path} toggleKevin={handleToggleListening} />}
         <Routes signedIn={user} />
         <Kevin ref={kevinRef}/>
     </>
