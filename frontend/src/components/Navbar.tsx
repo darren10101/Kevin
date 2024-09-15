@@ -3,7 +3,11 @@ import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-const Navbar = () => {
+interface NavbarProps {
+  path: string;
+}
+
+const Navbar = ({path}: NavbarProps) => {
   
   const [user, setUser] = useState('')
   const [recording, setRecording] = useState(false);
@@ -59,7 +63,7 @@ const Navbar = () => {
         </svg>
       </div> }
       <div className={styles.menu}>
-        <Link to='/dashboard'>{ user['username'][Object.keys(user['username'])[0]] }</Link>
+        <Link to='/dashboard'>{ user['username' as any][Object.keys(user['username' as any])[0] as any] }</Link>
         <div className={styles.button} onClick={signOutUser} >
           Logout
         </div>
