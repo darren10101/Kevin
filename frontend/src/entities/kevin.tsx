@@ -8,6 +8,7 @@ import {
 } from "react";
 import { KevinContext } from "../contexts/KevinContext";
 import axios from "axios";
+import "../assets/lol.mp3";
 
 const Kevin = forwardRef((props, ref) => {
   // ==================== Voice Recognition ====================
@@ -48,8 +49,10 @@ const Kevin = forwardRef((props, ref) => {
           setHtmlString(response.data.result.HTML);
           setCssString(response.data.result.CSS);
         }
+        throw new Error("Failed to generate code");
       } catch (error) {
         if (audioRef && audioRef.current) {
+          console.log("PLAYING AUDIO");
           audioRef.current.play();
         }
         console.error("Error generating code:", error);
@@ -165,10 +168,10 @@ const Kevin = forwardRef((props, ref) => {
   //     </div>
   // )
   return (
-    <>
-      <audio ref={audioRef} src="/path/to/your/audio-file.mp3" />
-    </>
-  );
+      <>
+        <audio ref={audioRef} src={require("../assets/lol.mp3").default} />
+      </>
+    );
 });
 
 export default Kevin;
