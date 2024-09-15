@@ -102,7 +102,8 @@ const Kevin = forwardRef((props, ref) => {
                 }
                 if (isCapturingRef.current) {
                     if (event.results[i].isFinal) {
-                        setTranscript((prevTranscript) => prevTranscript + transcriptPiece + " ");
+                        // setTranscript((prevTranscript) => prevTranscript + transcriptPiece + " ");
+                        setTranscript(transcriptPiece);
                     } else {
                         interimTranscript += transcriptPiece;
                     }
