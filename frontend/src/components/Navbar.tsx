@@ -40,6 +40,7 @@ const Navbar = ({ path }: NavbarProps) => {
       });
       localStorage.removeItem("token");
       setUser("");
+      window.location.reload();
     } catch (error) {
       console.error("Error logging out:", error);
     }
