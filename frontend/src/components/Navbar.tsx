@@ -4,51 +4,58 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 interface NavbarProps {
-  path: string;
+    path: string;
+    toggleKevin: () => void;
 }
 
-const Navbar = ({path}: NavbarProps) => {
-  const [user, setUser] = useState('')
-  const [recording, setRecording] = useState(false);
-  const [documentName, setDocumentName] = useState("Untitled Program");
-  const navigate = useNavigate();
+const Navbar = ({ path, toggleKevin}: NavbarProps) => {
 
-  useEffect(() => {
-    const getUser = async () => {
-      try {
-        const response = await axios.get('http://127.0.0.1:5000/user/get-user', {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
-        });
-        console.log(response.data);
-        setUser(response.data);
-        navigate('/');
-      } catch (error) {
-        console.error('Error getting user:', error);
-      }
-    };
-    getUser();
-  }, []);
+    const [user, setUser] = useState('')
+    const [recording, setRecording] = useState(false);
+    const [documentName, setDocumentName] = useState("Untitled Program");
+    const navigate = useNavigate();
 
-  const signOutUser = async () => {
-    try {
-      await axios.post('http://127.0.0.1:5000/user/logout', null, {
-        withCredentials: true,
-      });
-      localStorage.removeItem('token');
-      setUser('');
-      window.location.reload();
-    } catch (error) {
-      console.error('Error logging out:', error);
+    useEffect(() => {
+        const getUser = async () => {
+            try {
+                const response = await axios.get('http://127.0.0.1:5000/user/get-user', {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
+                });
+                console.log(response.data);
+                setUser(response.data);
+                navigate('/');
+            } catch (error) {
+                console.error('Error getting user:', error);
+            }
+        };
+        getUser();
+    }, []);
+
+    const signOutUser = async () => {
+        try {
+            await axios.post('http://127.0.0.1:5000/user/logout', null, {
+                withCredentials: true,
+            });
+            localStorage.removeItem('token');
+            setUser('');
+            window.location.reload();
+        } catch (error) {
+            console.error('Error logging out:', error);
+        }
     }
-  }
 
-  const updateDocumentName = (e: any) => {
-    e.preventDefault();
-    alert('Document name updated');
-    console.log(documentName);
-  }
+    const handleKevin = () => {
+        toggleKevin()
+        setRecording(!recording)
+    }
+
+    const updateDocumentName = (e: any) => {
+        e.preventDefault();
+        alert('Document name updated');
+        console.log(documentName);
+      }
 
   return <nav className={styles.navbar}>
     { path === '/document' ?
@@ -69,7 +76,7 @@ const Navbar = ({path}: NavbarProps) => {
     { 
     user ? <>
       { path != '/dashboard' &&
-      <div className={recording?styles.recording:styles.kevin} onClick={() => setRecording(!recording)}>
+      <div className={recording?styles.recording:styles.kevin} onClick={handleKevin}>
         Code with Kevin
         <svg height="80px" width="80px" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
           <g>

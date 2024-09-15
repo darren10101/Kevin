@@ -10,6 +10,7 @@
       "@components/*": ["./src/components/*"],
       "@assets/*": ["./src/assets/*"],
       "@routes/*": ["./src/routes/*"],
+      "typeRoots": ["./node_modules/@types", "./types"]
     }
   }
 }

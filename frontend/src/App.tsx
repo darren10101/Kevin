@@ -1,9 +1,10 @@
+import React, { useEffect, useState, useRef } from "react";
 import { useLocation } from 'react-router-dom'
 import { Routes } from './router/Router'
 import Navbar from '@components/Navbar'
-import { useEffect, useState } from 'react'
 import axios from 'axios'
 import './App.scss'
+import Kevin from './entities/kevin'
 import { NavbarProvider } from './contexts/NavbarContext'
 
 function App() {
@@ -59,4 +60,4 @@ function App() {
 );
 }
 
-export default App
+export default App;
