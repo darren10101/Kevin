@@ -1,8 +1,7 @@
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import axios from 'axios';
 import styles from './Login.module.scss';
 import Input from '@components/Input';
-import { auth } from '../firebase/client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 const Login = () => {
@@ -11,6 +10,28 @@ const Login = () => {
   const [error, setError] = useState("");
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        try {
+          const response = await axios.get('http://localhost:5000/user/verify', {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          });
+          if (response.status === 200) {
+            navigate('/dashboard');
+          }
+        } catch (error) {
+          console.error('Error verifying token:', error);
+        }
+      }
+    };
+    checkAuth();
+  }, [navigate]);
+
   const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
     const validateEmail: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -20,49 +41,65 @@ const Login = () => {
       setError("Please enter a valid email address");
       setEmail("");
     } else {
-      const userCred = await signInWithEmailAndPassword(auth, email, password).then(() => navigate('/dashboard')).catch((error) => {
-        switch (error.code) {
-          case "auth/invalid-credential":
-            setEmail("");
-            setPassword("");
-            setError("The account corresponding to this email does not exist");
-            break;
-        
-          default:
-            break;
+      try {
+        const response = await axios.post('http://localhost:5000/user/login', {
+          email,
+          password
+        });
+        if (response.status === 200) {
+          // Save the JWT token in local storage
+          localStorage.setItem('token', response.data.token);
+          navigate('/dashboard');
         }
-      })
-      console.log(userCred);
-    };
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+          switch (error.response.data.code) {
+            case "auth/invalid-credential":
+              setEmail("");
+              setPassword("");
+              setError("The account corresponding to this email does not exist");
+              break;
+            default:
+              setError("An error occurred. Please try again.");
+              break;
+          }
+        } else {
+          setError("An error occurred. Please try again.");
+        }
+      }
+    }
   }
-  return <main className={styles.main}>
-    <div>
-      <h1>Login</h1>
-      <form onSubmit={handleLogin}>
-        <Input 
-          label='Email' 
-          type='text' 
-          placeholder='Enter email' 
-          value={email}
-          onChange={(event) => setEmail(event.target.value)} 
-        />
-        <Input 
-          label='Password' 
-          type='password' 
-          placeholder='Enter password' 
-          value={password}
-          onChange={(event) => setPassword(event.target.value)}
-          toggleEye
-        />
-        <Link className={styles.forgot} to='/forgot-password'>Forgot Password?</Link>
-        {error && <div className={styles.error}>{error}</div>}
-        <button type='submit'>Start Now</button>
-        <div className={styles.register}>
-          Don't have an account? Register <Link to='/register'>here</Link>
-        </div>
-      </form>
-    </div>
-  </main>;
+
+  return (
+    <main className={styles.main}>
+      <div>
+        <h1>Login</h1>
+        <form onSubmit={handleLogin}>
+          <Input 
+            label='Email' 
+            type='text' 
+            placeholder='Enter email' 
+            value={email}
+            onChange={(event) => setEmail(event.target.value)} 
+          />
+          <Input 
+            label='Password' 
+            type='password' 
+            placeholder='Enter password' 
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+            toggleEye
+          />
+          <Link className={styles.forgot} to='/forgot-password'>Forgot Password?</Link>
+          {error && <div className={styles.error}>{error}</div>}
+          <button type='submit'>Start Now</button>
+          <div className={styles.register}>
+            Don't have an account? Register <Link to='/register'>here</Link>
+          </div>
+        </form>
+      </div>
+    </main>
+  );
 }
 
 export default Login;

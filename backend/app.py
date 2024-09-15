@@ -5,7 +5,8 @@ from user.routes import user_routes
 from llm.routes import groq_routes
 
 app = Flask(__name__)
-CORS(app)
+app.secret_key = 'welovekevin'
+CORS(app, supports_credentials=True)
 
 @app.route('/')
 def index():

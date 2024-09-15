@@ -19,22 +19,65 @@ db = firebase.database()
 
 @user_routes.route('/login', methods=['POST'])
 def login():
-    id_token = request.json.get('idToken')
+    email = request.json.get('email')
+    password = request.json.get('password')
     try:
-        token = auth.create_custom_token(id_token)
-        user = auth.sign_in_with_custom_token(token)
+        user = auth.sign_in_with_email_and_password(email, password)
         print(user)
-        uid = user['users'][0]['localId']
+        uid = user['localId']
         session['user'] = uid
-        return jsonify({'message': 'User logged in successfully'}), 200
+        return jsonify({"message": "User logged in", "token": user['idToken']}), 200
     except Exception as e:
         print(str(e))
-        return jsonify({'message': 'Invalid token', 'error': str(e)}), 401
+        return jsonify({'message': 'Invalid credentials', 'error': str(e)}), 401
+
+@user_routes.route("/signup", methods=["POST"])
+def signup():
+    data = request.get_json()
+    email = data['email']
+    password = data['password']
+    username = data['username']
+    try:
+        user = auth.create_user_with_email_and_password(email, password)
+        try:
+            db.child("usernames").child(user['localId']).push(username)
+            return jsonify({"message": "User created successfully", "token": user['idToken']}), 200
+        except Exception as e:
+            print(str(e))
+            return jsonify({"message": str(e)}), 400
+    except Exception as e:
+        return jsonify({"message": str(e)}), 400
 
 @user_routes.route('/logout', methods=['POST'])
 def logout():
     session.pop('user', None)
     return jsonify({'message': 'User logged out successfully'}), 200
+
+@user_routes.route('verify', methods=['GET'])
+def verify():
+    auth_header = request.headers.get('Authorization')
+    if auth_header and auth_header.startswith("Bearer "):
+        token = auth_header.split(' ')[1]
+        try:
+            user = auth.get_account_info(token)
+            return jsonify({'status': 'success', 'uid': user['users'][0]['localId']}), 200
+        except Exception as e:
+            return jsonify({'status': 'error', 'message': str(e)}), 401
+    
+    return jsonify({'message': 'No token provided'}), 401
+
+@user_routes.route('/get-user', methods=['GET'])
+def get_user():
+    auth_header = request.headers.get('Authorization')
+    if auth_header and auth_header.startswith("Bearer "):
+        token = auth_header.split(' ')[1]
+        try:
+            user = auth.get_account_info(token)
+            username = db.child("usernames").child(user['users'][0]['localId']).get().val()
+            return jsonify({'status': 'success', 'user': user, 'username':username}), 200
+        except Exception as e:
+            return jsonify({'status': 'error', 'message': str(e)}), 401
+    return jsonify({'message': 'No token provided'}), 401
 
 @user_routes.route('/get-programs', methods=['GET'])
 def protected():
@@ -45,6 +88,21 @@ def protected():
             return jsonify(programs), 200
         except Exception as e:
             return jsonify({'message': 'Error getting programs', 'error': str(e)}), 500
+    else:
+        return jsonify({'message': 'Unauthorized'}), 401
+
+@user_routes.route('/get-program/<program_id>', methods=['GET'])
+def get_program(program_id):
+    if 'user' in session:
+        uid = session['user']
+        try:
+            program = db.child("programs").child(program_id).get().val()
+            if program and program['user_id'] == uid:
+                return jsonify(program), 200
+            else:
+                return jsonify({'message': 'Program not found'}), 404
+        except Exception as e:
+            return jsonify({'message': 'Error getting program', 'error': str(e)}), 500
     else:
         return jsonify({'message': 'Unauthorized'}), 401
 

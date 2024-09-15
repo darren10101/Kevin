@@ -1,16 +1,45 @@
 import styles from './Navbar.module.scss';
-import { auth } from '../firebase/client'
-import { signOut } from 'firebase/auth'
-import { useAuthState } from 'react-firebase-hooks/auth'
-import { useState } from 'react'
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const Navbar = () => {
-  const [user] = useAuthState(auth);
+  
+  const [user, setUser] = useState('')
   const [recording, setRecording] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const getUser = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/user/get-user', {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+        console.log(response.data);
+        setUser(response.data);
+        navigate('/');
+      } catch (error) {
+        console.error('Error getting user:', error);
+      }
+    };
+    getUser();
+  }, []);
+
   const signOutUser = async () => {
-    await signOut(auth);
+    try {
+      await axios.post('http://localhost:5000/user/logout', null, {
+        withCredentials: true,
+      });
+      localStorage.removeItem('token');
+      setUser('');
+
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
   }
+
   return <nav className={styles.navbar}>
     <div>
       <img src="/logo.png" alt="Frontend Kevin" />
@@ -29,7 +58,7 @@ const Navbar = () => {
         </svg>
       </div>
       <div className={styles.menu}>
-        <Link to='/dashboard'>{ user.displayName ?? user.email}</Link>
+        <Link to='/dashboard'>{ user['username'][Object.keys(user['username'])[0]] }</Link>
         <div className={styles.button} onClick={signOutUser} >
           Logout
         </div>
