@@ -1,9 +1,8 @@
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { auth } from "../firebase/client";
-import styles from "./Register.module.scss";
-import Input from "@components/Input";
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import styles from './Register.module.scss';
+import Input from '@components/Input';
 
 const Register = () => {
   const [username, setUsername] = useState("");
@@ -12,6 +11,28 @@ const Register = () => {
   const [error, setError] = useState("");
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        try {
+          const response = await axios.get('http://localhost:5000/user/verify', {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          });
+          if (response.status === 200) {
+            navigate('/dashboard');
+          }
+        } catch (error) {
+          console.error('Error verifying token:', error);
+        }
+      }
+    };
+    checkAuth();
+  }, [navigate]);
+
   const handleRegister = async (event: React.FormEvent) => {
     event.preventDefault();
     const validateEmail: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -21,35 +42,49 @@ const Register = () => {
       setError("Please enter a valid email address");
       setEmail("");
     } else { 
-      await createUserWithEmailAndPassword(auth, email, password).then(
-        async (credential) => {
-          await updateProfile(credential.user, { displayName: username });
+      try {
+        console.log(username, email, password);
+        const response = await axios.post('http://localhost:5000/user/signup', {
+          email,
+          password,
+          username
+        });
+        if (response.status === 200) {
+          localStorage.setItem('token', response.data.token);
+          navigate('/dashboard');
         }
-      ).then(() => navigate('/dashboard')).catch((error: any) => {
-        switch (error.code) {
-          case "auth/email-already-in-use":
-            setEmail("");
-            setPassword("");
-            setError("The email address is already in use by another account");
-            break;
-          case "auth/invalid-email":
-            setEmail("");
-            setPassword("");
-            setError("The email address is invalid");
-            break;
-          case "auth/weak-password":
-            setPassword("");
-            setError("The password must be 6 characters long or more");
-            break;
-          default:
-            break;
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+          switch (error.response.data.code) {
+            case "auth/email-already-in-use":
+              setEmail("");
+              setPassword("");
+              setError("The email address is already in use by another account");
+              break;
+            case "auth/invalid-email":
+              setEmail("");
+              setPassword("");
+              setError("The email address is invalid");
+              break;
+            case "auth/weak-password":
+              setPassword("");
+              setError("The password must be 6 characters long or more");
+              break;
+            default:
+              setError("An error occurred. Please try again.");
+              break;
+          }
+        } else {
+          setError("An error occurred. Please try again.");
         }
-      });
+      }
     }
   };
   return <main className={styles.main}>
     <div>
-      <h1>Register</h1>
+      <Link to='/'>
+        <img src="/logo.png" alt="logo" />
+      </Link>
       <form onSubmit={handleRegister}>
         <Input 
           label='Username' 

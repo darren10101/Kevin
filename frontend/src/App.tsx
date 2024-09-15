@@ -2,26 +2,48 @@ import { useLocation } from 'react-router-dom'
 import { Routes } from './router/Router'
 import Navbar from '@components/Navbar'
 import { useEffect, useState } from 'react'
-import { useAuthState } from 'react-firebase-hooks/auth'
-
+import axios from 'axios'
 import './App.scss'
-import { auth } from './firebase/client'
 
 function App() {
   const location = useLocation()
   const [showNavbar, setShowNavbar] = useState(true)
-  const [user] = useAuthState(auth)
+  const [path, setPath] = useState('')
+  const [user, setUser] = useState(true)
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        try {
+          const response = await axios.get('http://localhost:5000/user/verify', {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          });
+          if (response.status != 200) {
+            setUser(false)
+          }
+        } catch (error) {
+          console.error('Error verifying token:', error);
+        }
+      }
+    };
+    checkAuth();
+  }, []);
+
   useEffect(() => {
     if (location.pathname === '/login' || location.pathname === '/register') {
       setShowNavbar(false)
     } else {
       setShowNavbar(true)
     }
+    setPath(location.pathname)
     document.title = 'Frontend Kevin'
   }, [location.pathname])
   return <>
-    { showNavbar && <Navbar />}
-    <Routes signedIn={user?true:false} />
+    { showNavbar && <Navbar path={path} />}
+    <Routes signedIn={user} />
   </>
 }
 
