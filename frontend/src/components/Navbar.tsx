@@ -12,9 +12,9 @@ const Navbar = () => {
     await signOut(auth);
   }
   return <nav className={styles.navbar}>
-    <div>
+    <Link to='/dashboard'>
       <img src="/logo.png" alt="Frontend Kevin" />
-    </div>
+    </Link>
     { 
     user ? <>
       <div className={recording?styles.recording:styles.kevin} onClick={() => setRecording(!recording)}>

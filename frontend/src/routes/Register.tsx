@@ -49,7 +49,9 @@ const Register = () => {
   };
   return <main className={styles.main}>
     <div>
-      <h1>Register</h1>
+      <Link to='/'>
+        <img src="/logo.png" alt="logo" />
+      </Link>
       <form onSubmit={handleRegister}>
         <Input 
           label='Username' 

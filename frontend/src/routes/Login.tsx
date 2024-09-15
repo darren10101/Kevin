@@ -37,7 +37,9 @@ const Login = () => {
   }
   return <main className={styles.main}>
     <div>
-      <h1>Login</h1>
+      <Link to='/'>
+        <img src="/logo.png" alt="logo" />
+      </Link>
       <form onSubmit={handleLogin}>
         <Input 
           label='Email' 
@@ -56,7 +58,7 @@ const Login = () => {
         />
         <Link className={styles.forgot} to='/forgot-password'>Forgot Password?</Link>
         {error && <div className={styles.error}>{error}</div>}
-        <button type='submit'>Start Now</button>
+        <button type='submit'>Log In</button>
         <div className={styles.register}>
           Don't have an account? Register <Link to='/register'>here</Link>
         </div>
