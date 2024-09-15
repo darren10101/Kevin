@@ -70,3 +70,18 @@
     }
   }
 }
+div.describe {
+  position: absolute;
+  font-size: 1.1rem;
+  cursor: pointer;
+  background-color: $secondary-grey;
+  border-radius: 1.5rem;
+  padding: 0.5rem 1rem;
+  bottom: 1rem;
+  right: calc(66vw + 1.5rem);
+  transition: 0.3s ease;
+  &:hover {
+    background-color: $white;
+    color: $secondary-grey
+  }
+}
