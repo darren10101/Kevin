@@ -21,7 +21,7 @@ const Home = () => {
   const previewRef = useRef<HTMLIFrameElement>(null);
   const [loading, setLoading] = useState(false);
 
-  const { afterVoice, setAfterVoice } = useContext(KevinContext);
+  const { afterVoice, setAfterVoice, setDescribe} = useContext(KevinContext);
 
   const getAudioFromText = async (text: string) => {
     setLoading(true);
@@ -99,6 +99,8 @@ const Home = () => {
       console.error("Iframe not loaded or not accessible.");
     }
   };
+
+  setDescribe
 
   const handleGenerateAudio = () => {
     const text = ""; // Example text

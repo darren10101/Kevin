@@ -22,7 +22,7 @@ const Document = () => {
 
   const [loading, setLoading] = useState(false);
 
-  const { afterVoice, setAfterVoice } = useContext(KevinContext);
+  const { afterVoice, setAfterVoice, describe, setDescribe } = useContext(KevinContext);
 
   const getAudioFromText = async (text: string) => {
     setLoading(true);
@@ -75,17 +75,29 @@ const Document = () => {
           // Execute html2canvas inside the iframe
           iframeWindow
             .html2canvas(iframeDocument.body)
-            .then((canvas: HTMLCanvasElement) => {
-              const imgData = canvas.toDataURL("image/png");
+            .then(async(canvas: HTMLCanvasElement) => {
+              let imgData = canvas.toDataURL("image/png");
+              imgData = imgData.replace(/^data:image\/(png|jpg);base64,/, "");
+              console.log(imgData);
+              try {
+                const imageDescription = await axios.post(
+                  "http://127.0.0.1:5000/llm/describe",
+                  { image: imgData }
+                );
+                await getAudioFromText(imageDescription.data.result);
+                setAfterVoice(false);
+              } catch (e) {
+                console.log("server error");
+              }
               console.log("Screenshot captured:");
-
+            
               // You can now download the image or process it further
-              const link = document.createElement("a");
-              link.href = imgData;
-              link.download = "screenshot.png";
-              document.body.appendChild(link);
-              link.click();
-              document.body.removeChild(link);
+            //   const link = document.createElement("a");
+            //   link.href = imgData;
+            //   link.download = "screenshot.png";
+            //   document.body.appendChild(link);
+            //   link.click();
+            //   document.body.removeChild(link);
             });
         };
 
@@ -99,30 +111,21 @@ const Document = () => {
     }
   };
 
+  setDescribe(injectHtml2Canvas);
   const handleGenerateAudio = () => {
     const text = "this is a test"; // Example text
     getAudioFromText(text);
   };
 
-  const handleImageDescription = async () => {
-    const imageData = await injectHtml2Canvas();
-    try {
-      const imageDescription = await axios.post(
-        "http://127.0.0.1:5000/llm/describe",
-        { image: imageData }
-      );
-      await getAudioFromText(imageDescription.data.result);
-      setAfterVoice(false);
-    } catch (e) {
-      console.log("server error");
-    }
-  };
-
   useEffect(() => {
+
     if (afterVoice) {
-      handleImageDescription();
+      injectHtml2Canvas();
+      setAfterVoice(false);
     }
   }, [afterVoice]);
+
+  
 
   useEffect(() => {
     const getProject = async () => {
@@ -205,7 +208,7 @@ return <main className={styles.main}>
       </div>
     </div>
     <div className={fullscreen?styles.fullscreen:styles.preview}>
-        <button onClick = {handleGenerateAudio}>test</button>
+        <button onClick = {injectHtml2Canvas}>test</button>
       <iframe
         srcDoc={`
           <html>
