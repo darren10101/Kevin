@@ -82,10 +82,10 @@ const Kevin = forwardRef((props, ref) => {
             for (let i = event.resultIndex; i < event.results.length; i++) {
                 const transcriptPiece = event.results[i][0].transcript.toLowerCase().trim()
 
-                if (transcriptPiece.includes("hey kevin")) {
+                if (transcriptPiece.includes("hey kevin") && listeningRef.current) {
                     transcriptPiece.replace("hey kevin", "")
                     setIsCapturing(true)
-                } else if (transcriptPiece.includes("thanks kevin")) {
+                } else if (transcriptPiece.includes("thanks kevin") && listeningRef.current) {
                     setIsCapturing(false)
                 }
                 if (isCapturingRef.current) {
