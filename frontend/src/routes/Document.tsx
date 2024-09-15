@@ -10,6 +10,23 @@ const Document = () => {
   const [searchParams] = useSearchParams();
   const id = searchParams.get('id');
   useEffect(() => {
+    const getProject = async () => {
+      try {
+        const response = await fetch(`http://127.0.0.1:5000/user/get-program/${id}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+        const data = await response.json();
+        console.log(data);
+        setHTML(data.html);
+        setCSS(data.css);
+
+      }
+      catch(error){
+          console.log(error)
+      }
+    };
     const handleKeyDown = (event: any) => {
       const code = event.which || event.keyCode;
       let charCode = String.fromCharCode(code).toLowerCase();
