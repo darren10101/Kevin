@@ -10,22 +10,26 @@ const Kevin = forwardRef((props, ref) => {
     const [isCapturing, setIsCapturing] = useState<boolean>(false)
     const isCapturingRef = useRef(isCapturing)
     const listeningRef = useRef(listening)
-    const {htmlString, setHtmlString, cssString, setCssString, promptString, setPromptString, nameString, setNameString} = useContext(KevinContext);
+    const {htmlString, setHtmlString, cssString, setCssString, promptString, setPromptString} = useContext(KevinContext);
 
     // SpeechRecognition instance, defined as optional since not all browsers support it
     let recognition: SpeechRecognition | null = null
-
+    
     useEffect(() => {
+        setPromptString(transcript)
+        const params = {
+            prompt: transcript,
+            old_html: htmlString,
+            old_css: cssString,
+        };
+        console.log("PARAMS----", params)
         const sendGenerationRequest = async () => {
             try {
-                const response = await axios.post('http://127.0.0.1:5000/llm/generate', {
-                    prompt: promptString,
-                    old_html: htmlString,
-                    old_css: cssString,
-                });
+                const response = await axios.post('http://127.0.0.1:5000/llm/generate', params);
                 if (response.status === 200) {
-                    setHtmlString(response.data.html);
-                    setCssString(response.data.css);
+                    console.log(response.data);
+                    setHtmlString(response.data.result.HTML);
+                    setCssString(response.data.result.CSS);
                 }
               } 
             catch (error) {
@@ -36,7 +40,6 @@ const Kevin = forwardRef((props, ref) => {
         isCapturingRef.current = isCapturing
         console.log("CAPTURE REF----", isCapturingRef.current)
         console.log(transcript)
-        setPromptString(transcript)
         
         sendGenerationRequest();
 
@@ -44,6 +47,7 @@ const Kevin = forwardRef((props, ref) => {
             recognition?.stop()
         }
     }, [isCapturing])
+
     useEffect(() => {
         listeningRef.current = listening
         console.log("LISTENING REF----", listeningRef.current)

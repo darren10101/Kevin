@@ -52,9 +52,24 @@ const Dashboard = () => {
       }, []);
 
     const handleNewProject = () => {
-
-        navigate('/document');
+        const createProject = async () => {
+            try {
+                const response = await axios.post('http://127.0.0.1:5000/user/create-program', {
+                }, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
+                });
+                console.log(response.data);
+                navigate(`/document?id=${response.data.id}`);
+            }
+            catch(error){
+                console.log(error)
+            }
+        }
+        createProject();
     }
+
     const handleProject = (id: number) => {
         navigate(`/document?id=${id}`);
     }

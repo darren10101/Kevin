@@ -132,7 +132,7 @@ def create_program():
                 "css": "",
             }
             db.child("programs").child(uid).child(id).push(program)
-            return jsonify({'message': 'Program created successfully'}), 200
+            return jsonify({'message': 'Program created successfully', 'id': id}), 200
         except Exception as e:
             return jsonify({'message': 'Error creating program', 'error': str(e)}), 500
     else:
