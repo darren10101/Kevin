@@ -64,7 +64,6 @@ const Navbar = ({ path, toggleKevin}: NavbarProps) => {
           <img src="/favicon.png" alt="Kevin" />
         </Link>
         <form onSubmit={(e) => updateDocumentName(e)}>
-
           <input type="text" value={nameString} onChange={(e) => setNameString(e.target.value)}  />
         </form>
       </div>
@@ -75,7 +74,7 @@ const Navbar = ({ path, toggleKevin}: NavbarProps) => {
     }
     { 
     user ? <>
-      { path != '/dashboard' &&
+      { path != '/dashboard' && <div className={styles.kevinContainer}>
       <div className={recording?styles.recording:styles.kevin} onClick={handleKevin}>
         Code with Kevin
         <svg height="80px" width="80px" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
@@ -86,7 +85,11 @@ const Navbar = ({ path, toggleKevin}: NavbarProps) => {
             </g>
           </g>
         </svg>
-      </div> }
+      </div>
+      <div className={styles.kevin}>
+        Describe with Kevin
+      </div>
+      </div>}
       <div className={styles.menu}>
         <Link to='/dashboard'>{ user['username' as any][Object.keys(user['username' as any])[0] as any] }</Link>
         <div className={styles.button} onClick={signOutUser} >

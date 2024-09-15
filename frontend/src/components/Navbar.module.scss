@@ -91,28 +91,34 @@
       }
     }
   }
-  div.kevin, div.recording {
-    cursor: pointer;
-    background-color: $secondary-grey;
-    box-shadow: $tertiary-grey 0 0 0.2rem;
-    padding: 0.5rem 1rem;
-    border-radius: 1.5rem;
-    font-size: 1.1rem;
+  div.kevinContainer {
     display: flex;
     align-items: center;
-    gap: 0.7rem;
-    transition: 0.3s ease;
-    svg {
-      fill: $white;
-      height: 1.5rem;
-      width: auto;
+    flex-direction: row;
+    gap: 1rem;
+    div.kevin, div.recording {
+      cursor: pointer;
+      background-color: $secondary-grey;
+      box-shadow: $tertiary-grey 0 0 0.2rem;
+      padding: 0.5rem 1rem;
+      border-radius: 1.5rem;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
       transition: 0.3s ease;
-    }
-    &:hover {
-      background-color: #D4D4D4;
-      color: #3b3f42;
       svg {
-        fill: #3b3f42;
+        fill: $white;
+        height: 1.5rem;
+        width: auto;
+        transition: 0.3s ease;
+      }
+      &:hover {
+        background-color: #D4D4D4;
+        color: #3b3f42;
+        svg {
+          fill: #3b3f42;
+        }
       }
     }
   }
