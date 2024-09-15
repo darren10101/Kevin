@@ -69,37 +69,36 @@ const Login = () => {
       }
     }
   }
-
-  return (
-    <main className={styles.main}>
-      <div>
-        <h1>Login</h1>
-        <form onSubmit={handleLogin}>
-          <Input 
-            label='Email' 
-            type='text' 
-            placeholder='Enter email' 
-            value={email}
-            onChange={(event) => setEmail(event.target.value)} 
-          />
-          <Input 
-            label='Password' 
-            type='password' 
-            placeholder='Enter password' 
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            toggleEye
-          />
-          <Link className={styles.forgot} to='/forgot-password'>Forgot Password?</Link>
-          {error && <div className={styles.error}>{error}</div>}
-          <button type='submit'>Start Now</button>
-          <div className={styles.register}>
-            Don't have an account? Register <Link to='/register'>here</Link>
-          </div>
-        </form>
-      </div>
-    </main>
-  );
+  return <main className={styles.main}>
+    <div>
+      <Link to='/'>
+        <img src="/logo.png" alt="logo" />
+      </Link>
+      <form onSubmit={handleLogin}>
+        <Input 
+          label='Email' 
+          type='text' 
+          placeholder='Enter email' 
+          value={email}
+          onChange={(event) => setEmail(event.target.value)} 
+        />
+        <Input 
+          label='Password' 
+          type='password' 
+          placeholder='Enter password' 
+          value={password}
+          onChange={(event) => setPassword(event.target.value)}
+          toggleEye
+        />
+        <Link className={styles.forgot} to='/forgot-password'>Forgot Password?</Link>
+        {error && <div className={styles.error}>{error}</div>}
+        <button type='submit'>Log In</button>
+        <div className={styles.register}>
+          Don't have an account? Register <Link to='/register'>here</Link>
+        </div>
+      </form>
+    </div>
+  </main>;
 }
 
 export default Login;

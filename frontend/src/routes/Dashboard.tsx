@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react'
 import styles from './Dashboard.module.scss'
+import { Typewriter } from '@components/Typewriter';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { auth } from '../firebase/client';
 
 interface Project {
     cssRaw: string;
@@ -10,6 +13,7 @@ interface Project {
 
 const Dashboard = () => {
     const [projects, setProjects] = useState<Project[]>([]);
+    const [user] = useAuthState(auth);
 
     useEffect(() => {
         fetch('http://127.0.0.1:5000/user/get-projects')
@@ -20,7 +24,16 @@ const Dashboard = () => {
 
     return (
         <div className={styles.dashboard}>
-            <h1>Dashboard</h1>
+            <h1>
+                <Typewriter
+                    text={`Hi ${user?user.displayName:"User"}, it's me Kevin!;What would you like to build today?`}
+                    typeSpeed={60}
+                    deleteSpeed={30}
+                    delay={2000}
+                    initialDelay={1000}
+                />
+            </h1>
+            <hr />
             <div className={styles.projects}>
                 {projects.map((project, index) => {
                     return (
@@ -41,6 +54,10 @@ const Dashboard = () => {
                         </div>
                     );
                 })}
+                <div className={styles.add}>
+                    <span>Add a project</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z"/></svg>
+                </div>
             </div>
         </div>
     );

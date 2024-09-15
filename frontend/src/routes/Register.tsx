@@ -80,43 +80,42 @@ const Register = () => {
       }
     }
   };
-
-  return (
-    <main className={styles.main}>
-      <div>
-        <h1>Register</h1>
-        <form onSubmit={handleRegister}>
-          <Input 
-            label='Username' 
-            type='text' 
-            placeholder='Enter username' 
-            value={username}
-            onChange={(event) => setUsername(event.target.value)}
-          />
-          <Input 
-            label='Email' 
-            type='text' 
-            placeholder='Enter email' 
-            value={email}
-            onChange={(event) => setEmail(event.target.value)} 
-          />
-          <Input 
-            label='Password' 
-            type='password' 
-            placeholder='Enter password' 
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            toggleEye
-          />
-          {error && <div className={styles.error}>{error}</div>}
-          <button type='submit'>Make an account</button>
-          <div className={styles.login}>
-            Already have an account? Login <Link to='/login'>here</Link>
-          </div>
-        </form>
-      </div>
-    </main>
-  );
+  return <main className={styles.main}>
+    <div>
+      <Link to='/'>
+        <img src="/logo.png" alt="logo" />
+      </Link>
+      <form onSubmit={handleRegister}>
+        <Input 
+          label='Username' 
+          type='text' 
+          placeholder='Enter username' 
+          value={username}
+          onChange={(event) => setUsername(event.target.value)}
+        />
+        <Input 
+          label='Email' 
+          type='text' 
+          placeholder='Enter email' 
+          value={email}
+          onChange={(event) => setEmail(event.target.value)} 
+        />
+        <Input 
+          label='Password' 
+          type='password' 
+          placeholder='Enter password' 
+          value={password}
+          onChange={(event) => setPassword(event.target.value)}
+          toggleEye
+        />
+        {error && <div className={styles.error}>{error}</div>}
+        <button type='submit'>Make an account</button>
+        <div className={styles.login}>
+          Already have an account? Login <Link to='/login'>here</Link>
+        </div>
+      </form>
+    </div>
+  </main>;
 }
 
 export default Register;
