@@ -1,13 +1,28 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef} from "react";
 
 const App: React.FC = () => {
     const [transcript, setTranscript] = useState<string>("")
     const [listening, setListening] = useState<boolean>(false)
     const [isCapturing, setIsCapturing] = useState<boolean>(false)
     const [capturedText, setCapturedText] = useState<string>('')
+    const isCapturingRef = useRef(isCapturing)
+    const listeningRef = useRef(listening)
 
     // SpeechRecognition instance, defined as optional since not all browsers support it
     let recognition: SpeechRecognition | null = null;
+
+
+    useEffect(() => {
+        isCapturingRef.current = isCapturing
+        console.log("CAPTURE REF----", isCapturingRef.current)
+        listeningRef.current = listening
+        if (!listeningRef.current) {
+            recognition?.stop()
+        }
+        if (!isCapturingRef.current) {
+            console.log(transcript)
+        }
+    }, [isCapturing, listening])
 
     // Initialize the speech recognition object
     const initializeRecognition = () => {
@@ -34,23 +49,21 @@ const App: React.FC = () => {
             // Iterate over the speech results
             for (let i = event.resultIndex; i < event.results.length; i++) {
                 const transcriptPiece = event.results[i][0].transcript.toLowerCase().trim()
-                
-                if (transcriptPiece.toLowerCase().includes("hey kevin")) {
+
+                if (transcriptPiece.includes("hey kevin")) {
                     setIsCapturing(true)
+                } else if (transcriptPiece.includes("thanks kevin")) {
+                    setIsCapturing(false)
                 }
-                if (event.results[i].isFinal) {
-                    setTranscript((prevTranscript) => prevTranscript + transcriptPiece + " ");
-                } else {
-                    interimTranscript += transcriptPiece;
-                }
-                if (isCapturing && event.results[i].isFinal) {
-                    setCapturedText((prevText) => prevText + transcriptPiece + " ");
-                } else {
-                    setCapturedText('a')
+                if (isCapturingRef.current) {
+                    if (event.results[i].isFinal) {
+                        setTranscript((prevTranscript) => prevTranscript + transcriptPiece + " ");
+                    } else {
+                        interimTranscript += transcriptPiece;
+                    }
                 }
             }
             console.log("Interim transcript: ", interimTranscript)
-            console.log("Captured text: ", capturedText)
         };
 
         // Restart recognition in case it stops automatically
@@ -77,7 +90,7 @@ const App: React.FC = () => {
         setListening(false);
         setTranscript("");
         recognition?.stop();
-    };
+    }
 
     // Initialize the SpeechRecognition API when the component mounts
     useEffect(() => {
