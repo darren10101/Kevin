@@ -5,18 +5,21 @@ import { useAuthState } from 'react-firebase-hooks/auth'
 import { useState } from 'react'
 import { Link } from 'react-router-dom';
 
-const Navbar = () => {
+interface NavbarProps {
+  path: string;
+}
+
+const Navbar = ({ path }: NavbarProps) => {
   const [user] = useAuthState(auth);
   const [recording, setRecording] = useState(false);
-  const signOutUser = async () => {
-    await signOut(auth);
-  }
+  const signOutUser = async () => {await signOut(auth);}
   return <nav className={styles.navbar}>
     <Link to='/dashboard'>
       <img src="/logo.png" alt="Frontend Kevin" />
     </Link>
     { 
     user ? <>
+      { path != '/dashboard' &&
       <div className={recording?styles.recording:styles.kevin} onClick={() => setRecording(!recording)}>
         Code with Kevin
         <svg height="80px" width="80px" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
@@ -27,7 +30,7 @@ const Navbar = () => {
             </g>
           </g>
         </svg>
-      </div>
+      </div> }
       <div className={styles.menu}>
         <Link to='/dashboard'>{ user.displayName ?? user.email}</Link>
         <div className={styles.button} onClick={signOutUser} >
