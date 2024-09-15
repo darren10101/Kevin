@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import Editor from '@components/Editor'
 import styles from './Home.module.scss'
 
@@ -6,23 +7,23 @@ const Document = () => {
   const [html, setHTML] = useState('')
   const [css, setCSS] = useState('')
   const [fullscreen, setFullscreen] = useState(false)
-
+  const [searchParams] = useSearchParams();
+  const id = searchParams.get('id');
   useEffect(() => {
     const handleKeyDown = (event: any) => {
       const code = event.which || event.keyCode;
-
       let charCode = String.fromCharCode(code).toLowerCase();
       if ((event.ctrlKey || event.metaKey) && charCode === 's') {
         event.preventDefault();
         alert('Project Saved');
       }
     };
-
+    
     window.addEventListener('keydown', handleKeyDown);
-
+    
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
-
+  
 return <main className={styles.main}>
     <div className={styles.editor}>
       <h3>HTML</h3>
