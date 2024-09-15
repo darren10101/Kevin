@@ -127,12 +127,13 @@ const Kevin = forwardRef((props, ref) => {
         toggleListening
     }));
     // Initialize the SpeechRecognition API when the component mounts
-    return (
-        <div>
-            <h1>Kevin</h1>
-            <p>transcript: {transcript}</p>
-        </div>
-    )
+    // return (
+    //     <div>
+    //         <h1>Kevin</h1>
+    //         <p>transcript: {transcript}</p>
+    //     </div>
+    // )
+    return <></>
 })
 
 export default Kevin;
