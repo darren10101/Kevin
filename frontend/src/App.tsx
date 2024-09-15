@@ -9,7 +9,7 @@ const App: React.FC = () => {
     const listeningRef = useRef(listening)
 
     // SpeechRecognition instance, defined as optional since not all browsers support it
-    let recognition: SpeechRecognition | null = null;
+    let recognition: SpeechRecognition | null = null
 
 
     useEffect(() => {
