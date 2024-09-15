@@ -15,6 +15,49 @@ const Home = () => {
   const [html, setHTML] = useState("");
   const [css, setCSS] = useState("");
   const [fullscreen, setFullscreen] = useState(false);
+  const previewRef = useRef<HTMLIFrameElement>(null);
+
+  const injectHtml2Canvas = async () => {
+    if (previewRef.current && previewRef.current.contentWindow) {
+      const iframeWindow = previewRef.current.contentWindow;
+      const iframeDocument = previewRef.current.contentDocument;
+
+      // Check if the iframe document is accessible (same-origin)
+      if (iframeDocument) {
+        // Inject the html2canvas script if it's not already loaded in the iframe
+        const script = iframeDocument.createElement("script");
+        script.src =
+          "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
+        script.onload = () => {
+          console.log("html2canvas loaded in iframe.");
+
+          // Execute html2canvas inside the iframe
+          iframeWindow
+            .html2canvas(iframeDocument.body)
+            .then((canvas: HTMLCanvasElement) => {
+              const imgData = canvas.toDataURL("image/png");
+              console.log("Screenshot captured:", imgData);
+
+              // You can now download the image or process it further
+              const link = document.createElement("a");
+              link.href = imgData;
+              link.download = "screenshot.png";
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+            });
+        };
+
+        // Append the script to the iframe's head or body
+        iframeDocument.head.appendChild(script);
+      } else {
+        console.error("Unable to access iframe document.");
+      }
+    } else {
+      console.error("Iframe not loaded or not accessible.");
+    }
+  };
+
   return (
     <main className={styles.main}>
       <div className={styles.editor}>
@@ -30,6 +73,7 @@ const Home = () => {
         </div>
       </div>
       <div className={fullscreen ? styles.fullscreen : styles.preview}>
+        <button onClick={injectHtml2Canvas}></button>
         <iframe
           srcDoc={`
           <html>
