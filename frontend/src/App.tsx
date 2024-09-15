@@ -1,11 +1,12 @@
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useLocation } from 'react-router-dom'
 import { Routes } from './router/Router'
 import Navbar from '@components/Navbar'
 import axios from 'axios'
 import './App.scss'
-import Kevin from './entities/kevin'
-import { NavbarProvider } from './contexts/NavbarContext'
+import Kevin from "./entities/kevin";
+import { KevinProvider } from "./contexts/KevinContext";
+
 
 function App() {
   const location = useLocation()
@@ -50,14 +51,20 @@ function App() {
     document.title = 'Frontend Kevin'
   }, [location.pathname])
 
-  return (
-    <NavbarProvider>
-        <>
-            {showNavbar && <Navbar path={path} />}
-            {loading ? <></> : <Routes signedIn={user} />}
-        </>
-    </NavbarProvider>
-);
-}
+  const kevinRef = useRef<{ toggleListening: () => void } | null>(null);
+    const handleToggleListening = () => {
+        if (kevinRef.current) {
+            console.log("calling toggle listening");
+            kevinRef.current.toggleListening();
+        }
+    };
+    return <KevinProvider>
+        {showNavbar && <Navbar path={path} toggleKevin={handleToggleListening} />}
+        {
+            loading ? <></> : <Routes signedIn={user} />
+        }
+        <Kevin ref={kevinRef} />
+    </KevinProvider>
+};
 
 export default App;

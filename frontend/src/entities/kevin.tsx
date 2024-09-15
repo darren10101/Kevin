@@ -1,4 +1,6 @@
-import { useEffect, useRef, useState, forwardRef, useImperativeHandle } from "react"
+import { useContext, useEffect, useRef, useState, forwardRef, useImperativeHandle } from "react"
+import { KevinContext } from "../contexts/KevinContext"
+import axios from "axios"
 
 const Kevin = forwardRef((props, ref) => {
 
@@ -8,15 +10,36 @@ const Kevin = forwardRef((props, ref) => {
     const [isCapturing, setIsCapturing] = useState<boolean>(false)
     const isCapturingRef = useRef(isCapturing)
     const listeningRef = useRef(listening)
+    const {htmlString, setHtmlString, cssString, setCssString, promptString, setPromptString, nameString, setNameString} = useContext(KevinContext);
 
     // SpeechRecognition instance, defined as optional since not all browsers support it
     let recognition: SpeechRecognition | null = null
 
     useEffect(() => {
+        const sendGenerationRequest = async () => {
+            try {
+                const response = await axios.post('http://127.0.0.1:5000/llm/generate', {
+                    prompt: promptString,
+                    old_html: htmlString,
+                    old_css: cssString,
+                });
+                if (response.status === 200) {
+                    setHtmlString(response.data.html);
+                    setCssString(response.data.css);
+                }
+              } 
+            catch (error) {
+                console.error('Error generating code:', error);
+            }
+        };
+
         isCapturingRef.current = isCapturing
         console.log("CAPTURE REF----", isCapturingRef.current)
         console.log(transcript)
-        // TODO: add api calls here
+        setPromptString(transcript)
+        
+        sendGenerationRequest();
+
         if (!listeningRef.current) {
             recognition?.stop()
         }
@@ -55,6 +78,7 @@ const Kevin = forwardRef((props, ref) => {
                 const transcriptPiece = event.results[i][0].transcript.toLowerCase().trim()
 
                 if (transcriptPiece.includes("hey kevin")) {
+                    transcriptPiece.replace("hey kevin", "")
                     setIsCapturing(true)
                 } else if (transcriptPiece.includes("thanks kevin")) {
                     setIsCapturing(false)

@@ -1,8 +1,8 @@
 import styles from './Navbar.module.scss';
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-
+import { KevinContext } from '../contexts/KevinContext';
 interface NavbarProps {
     path: string;
     toggleKevin: () => void;
@@ -12,7 +12,7 @@ const Navbar = ({ path, toggleKevin}: NavbarProps) => {
 
     const [user, setUser] = useState('')
     const [recording, setRecording] = useState(false);
-    const [documentName, setDocumentName] = useState("Untitled Program");
+    const {nameString, setNameString} = useContext(KevinContext);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -54,7 +54,7 @@ const Navbar = ({ path, toggleKevin}: NavbarProps) => {
     const updateDocumentName = (e: any) => {
         e.preventDefault();
         alert('Document name updated');
-        console.log(documentName);
+        console.log(nameString);
       }
 
   return <nav className={styles.navbar}>
@@ -65,7 +65,7 @@ const Navbar = ({ path, toggleKevin}: NavbarProps) => {
         </Link>
         <form onSubmit={(e) => updateDocumentName(e)}>
 
-          <input type="text" value={documentName} onChange={(e) => setDocumentName(e.target.value)}  />
+          <input type="text" value={nameString} onChange={(e) => setNameString(e.target.value)}  />
         </form>
       </div>
       :

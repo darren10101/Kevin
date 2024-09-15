@@ -1,14 +1,18 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useContext } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import Editor from '@components/Editor'
 import styles from './Home.module.scss'
+import { KevinContext } from '../contexts/KevinContext'
+import axios from 'axios'
+
 
 const Document = () => {
-  const [html, setHTML] = useState('')
-  const [css, setCSS] = useState('')
-  const [fullscreen, setFullscreen] = useState(false)
+  const { htmlString, setHtmlString, cssString, setCssString, nameString, setNameString } = useContext(KevinContext);
+  const [fullscreen, setFullscreen] = useState(false);
   const [searchParams] = useSearchParams();
+  const [oid, setOid] = useState('');
   const id = searchParams.get('id');
+
   useEffect(() => {
     const getProject = async () => {
       try {
@@ -18,40 +22,73 @@ const Document = () => {
           },
         });
         const data = await response.json();
-        console.log(data);
-        setHTML(data.html);
-        setCSS(data.css);
+        const projectKey = Object.keys(data)[0];
+        const projectData = data[projectKey];
 
-      }
-      catch(error){
-          console.log(error)
-      }
-    };
-    const handleKeyDown = (event: any) => {
-      const code = event.which || event.keyCode;
-      let charCode = String.fromCharCode(code).toLowerCase();
-      if ((event.ctrlKey || event.metaKey) && charCode === 's') {
-        event.preventDefault();
-        alert('Project Saved');
+        setOid(projectKey);
+        setHtmlString(projectData.html);
+        setCssString(projectData.css);
+        setNameString(projectData.name);
+      } catch (error) {
+        console.error('Error fetching project:', error);
       }
     };
-    
+
+    getProject();
+  }, [id, setHtmlString, setCssString, setNameString]);
+
+  const saveProject = async () => {
+    const params = {
+      name: nameString,
+      html: htmlString,
+      css: cssString,
+      id: id,
+      oid: oid,
+    };
+
+    try {
+      console.log(params);
+      const response = await axios.post('http://127.0.0.1:5000/user/update-program', params, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+      if (response.status === 200) {
+        console.log('Project saved');
+      }
+    } catch (error) {
+      console.error('Error saving project:', error);
+    }
+  };
+
+  const handleKeyDown = (event: any) => {
+    const code = event.which || event.keyCode;
+    const charCode = String.fromCharCode(code).toLowerCase();
+    if ((event.ctrlKey || event.metaKey) && charCode === 's') {
+      event.preventDefault();
+      saveProject();
+      alert('Project Saved');
+    }
+  };
+
+  useEffect(() => {
     window.addEventListener('keydown', handleKeyDown);
-    
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [handleKeyDown]);
+
+
   
 return <main className={styles.main}>
     <div className={styles.editor}>
       <h3>HTML</h3>
       <div>
-        <Editor lang='html' code={html} onChange={setHTML} />
+        <Editor lang='html' code={htmlString} onChange={setHtmlString} />
       </div>
     </div>
     <div className={styles.editor}>
       <h3>CSS</h3>
       <div>
-        <Editor lang='css' code={css} onChange={setCSS} />
+        <Editor lang='css' code={cssString} onChange={setCssString} />
       </div>
     </div>
     <div className={fullscreen?styles.fullscreen:styles.preview}>
@@ -59,10 +96,10 @@ return <main className={styles.main}>
         srcDoc={`
           <html>
             <head>
-              <style>${css}</style>
+              <style>${cssString}</style>
             </head>
             <body>
-              ${html}
+              ${htmlString}
             </body>
           </html>
         `}

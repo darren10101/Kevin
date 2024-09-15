@@ -55,7 +55,7 @@ const Dashboard = () => {
 
         navigate('/document');
     }
-    const handleProject = (id: string) => {
+    const handleProject = (id: number) => {
         navigate(`/document?id=${id}`);
     }
 
@@ -73,9 +73,8 @@ const Dashboard = () => {
             <hr />
             <div className={styles.projects}>
             {projects && projects.map((project, index) => {
-                    console.log(index);
                     return Object.entries(project).map(([key, value]) => (
-                        <div key={key} className={styles.project} onClick={() => handleProject(key)}>
+                        <div key={key} className={styles.project} onClick={() => handleProject(index)}>
                             <h3>{value.name}</h3>
                             <iframe
                                 srcDoc={`

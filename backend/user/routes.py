@@ -158,6 +158,7 @@ def update_program():
     css = request.json.get('css')
     id = request.json.get('id')
     oid = request.json.get('oid')
+    print(name, html, css, id, oid)
     auth_header = request.headers.get('Authorization')
     if auth_header and auth_header.startswith("Bearer "):
         token = auth_header.split(' ')[1]
