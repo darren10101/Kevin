@@ -1,0 +1,15 @@
+# Ignore node_modules as we will install dependencies in the container
+node_modules
+dist
+build
+# Ignore log files
+*.log
+venv
+
+# Ignore IDE-specific files
+.vscode
+.idea
+
+# Ignore git-related files
+.git
+.gitignore
