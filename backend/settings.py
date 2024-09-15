@@ -12,7 +12,12 @@ class FirebaseCredentials(BaseModel):
 
 class GroqCredentials(BaseModel):
     apiKey: str = Field(default_factory=lambda: os.getenv("GROQ_API_KEY", ""))
+    
+class ElevenLabsCredentials(BaseModel):
+    apiKey: str = Field(default_factory=lambda: os.getenv("ELEVENLABS_API_KEY", ""))
+    
 
 class Settings:
     firebase_credentials: FirebaseCredentials = FirebaseCredentials()
     groq_credentials: GroqCredentials = GroqCredentials()
+    eleven_credentials: ElevenLabsCredentials = ElevenLabsCredentials()

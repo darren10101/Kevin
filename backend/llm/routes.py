@@ -23,6 +23,8 @@ def generate():
 def describe():
     groq_generator = GroqGenerator()
     base64_image = request.json.get('image')
+    with open('./logfile.txt', 'w') as f:
+        f.write(json.dumps(request.json, indent=4))
     res = groq_generator.describe(base64_image)
     return jsonify({'result': res}), 200
 

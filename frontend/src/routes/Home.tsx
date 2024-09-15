@@ -76,7 +76,7 @@ const Home = () => {
             .html2canvas(iframeDocument.body)
             .then((canvas: HTMLCanvasElement) => {
               const imgData = canvas.toDataURL("image/png");
-              console.log("Screenshot captured:", imgData);
+              console.log("Screenshot captured:");
 
               return imgData;
 
@@ -128,18 +128,19 @@ const Home = () => {
   return (
     <main className={styles.main}>
       <div className={styles.editor}>
-        <h3>HTML</h3>
+        <h3><button onClick = {injectHtml2Canvas}> Test</button></h3>
         <div>
           <Editor lang="html" code={html} onChange={setHTML} />
         </div>
       </div>
       <div className={styles.editor}>
-        <h3>CSS</h3>
+        <h3>CSS </h3>
         <div>
           <Editor lang="css" code={css} onChange={setCSS} />
         </div>
       </div>
       <div className={fullscreen ? styles.fullscreen : styles.preview}>
+       
         <iframe
           srcDoc={`
           <html>
