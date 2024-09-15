@@ -4,7 +4,6 @@ const App: React.FC = () => {
     const [transcript, setTranscript] = useState<string>("")
     const [listening, setListening] = useState<boolean>(false)
     const [isCapturing, setIsCapturing] = useState<boolean>(false)
-    const [capturedText, setCapturedText] = useState<string>('')
     const isCapturingRef = useRef(isCapturing)
     const listeningRef = useRef(listening)
 
