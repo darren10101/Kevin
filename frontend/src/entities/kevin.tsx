@@ -36,6 +36,7 @@ const Kevin = forwardRef((props, ref) => {
               } 
             catch (error) {
                 setTranscript("")
+                alert("Kevin cannot understand your request");
                 console.error('Error generating code:', error);
             }
         };
