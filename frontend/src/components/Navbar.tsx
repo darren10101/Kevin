@@ -10,7 +10,7 @@ interface NavbarProps {
 const Navbar = ({path}: NavbarProps) => {
   const [user, setUser] = useState('')
   const [recording, setRecording] = useState(false);
-  const [documentName, setDocumentName] = useState("Untitled Document");
+  const [documentName, setDocumentName] = useState("Untitled Program");
   const navigate = useNavigate();
 
   useEffect(() => {
