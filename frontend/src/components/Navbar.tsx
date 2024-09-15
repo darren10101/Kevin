@@ -1,22 +1,24 @@
 import styles from "./Navbar.module.scss";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-
+import { KevinContext } from "../contexts/KevinContext";
 interface NavbarProps {
   path: string;
+  toggleKevin: () => void;
 }
 
-const Navbar = ({ path }: NavbarProps) => {
+const Navbar = ({ path, toggleKevin }: NavbarProps) => {
   const [user, setUser] = useState("");
   const [recording, setRecording] = useState(false);
+  const { nameString, setNameString } = useContext(KevinContext);
   const navigate = useNavigate();
 
   useEffect(() => {
     const getUser = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/user/get-user",
+          "http://127.0.0.1:5000/user/get-user",
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -35,7 +37,7 @@ const Navbar = ({ path }: NavbarProps) => {
 
   const signOutUser = async () => {
     try {
-      await axios.post("http://localhost:5000/user/logout", null, {
+      await axios.post("http://127.0.0.1:5000/user/logout", null, {
         withCredentials: true,
       });
       localStorage.removeItem("token");
@@ -46,17 +48,43 @@ const Navbar = ({ path }: NavbarProps) => {
     }
   };
 
+  const handleKevin = () => {
+    toggleKevin();
+    setRecording(!recording);
+  };
+
+  const updateDocumentName = (e: any) => {
+    e.preventDefault();
+    alert("Document name updated");
+    console.log(nameString);
+  };
+
   return (
     <nav className={styles.navbar}>
-      <Link to="/dashboard">
-        <img src="/logo.png" alt="Frontend Kevin" />
-      </Link>
+      {path === "/document" ? (
+        <div className={styles.newDoc}>
+          <Link to="/dashboard">
+            <img src="/favicon.png" alt="Kevin" />
+          </Link>
+          <form onSubmit={(e) => updateDocumentName(e)}>
+            <input
+              type="text"
+              value={nameString}
+              onChange={(e) => setNameString(e.target.value)}
+            />
+          </form>
+        </div>
+      ) : (
+        <Link to="/dashboard">
+          <img src="/logo.png" alt="Frontend Kevin" />
+        </Link>
+      )}
       {user ? (
         <>
           {path != "/dashboard" && (
             <div
               className={recording ? styles.recording : styles.kevin}
-              onClick={() => setRecording(!recording)}
+              onClick={handleKevin}
             >
               Code with Kevin
               <svg

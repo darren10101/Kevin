@@ -1,8 +1,9 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useContext } from "react";
 import Editor from "@components/Editor";
 import styles from "./Home.module.scss";
-import { ElevenLabsClient, play } from "elevenlabs";
+import { KevinContext } from "../contexts/KevinContext";
 import process from "process";
+import axios from "axios";
 
 //screenshot variables
 //import html2canvas from "html2canvas";
@@ -19,6 +20,8 @@ const Home = () => {
   const [fullscreen, setFullscreen] = useState(false);
   const previewRef = useRef<HTMLIFrameElement>(null);
   const [loading, setLoading] = useState(false);
+
+  const { afterVoice, setAfterVoice } = useContext(KevinContext);
 
   const getAudioFromText = async (text: string) => {
     setLoading(true);
@@ -54,11 +57,6 @@ const Home = () => {
     }
   };
 
-  const handleGenerateAudio = () => {
-    const text = ""; // Example text
-    getAudioFromText(text);
-  };
-
   const injectHtml2Canvas = async () => {
     if (previewRef.current && previewRef.current.contentWindow) {
       const iframeWindow = previewRef.current.contentWindow;
@@ -80,6 +78,8 @@ const Home = () => {
               const imgData = canvas.toDataURL("image/png");
               console.log("Screenshot captured:", imgData);
 
+              return imgData;
+
               // You can now download the image or process it further
               const link = document.createElement("a");
               link.href = imgData;
@@ -100,7 +100,30 @@ const Home = () => {
     }
   };
 
-  process;
+  const handleGenerateAudio = () => {
+    const text = ""; // Example text
+    getAudioFromText(text);
+  };
+
+  const handleImageDescription = async () => {
+    const imageData = await injectHtml2Canvas();
+    try {
+      const imageDescription = await axios.post(
+        "http://127.0.0.1:5000/llm/describe",
+        { image: imageData }
+      );
+      await getAudioFromText(imageDescription.data.result);
+      setAfterVoice(false);
+    } catch (e) {
+      console.log("server error");
+    }
+  };
+
+  useEffect(() => {
+    if (afterVoice) {
+      handleImageDescription();
+    }
+  }, [afterVoice]);
 
   return (
     <main className={styles.main}>
@@ -117,8 +140,6 @@ const Home = () => {
         </div>
       </div>
       <div className={fullscreen ? styles.fullscreen : styles.preview}>
-        <button onClick={injectHtml2Canvas}> Screenshot</button>
-        <button onClick={handleGenerateAudio}> Voice Demo</button>
         <iframe
           srcDoc={`
           <html>
