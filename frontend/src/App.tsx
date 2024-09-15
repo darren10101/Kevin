@@ -16,7 +16,7 @@ function App() {
       const token = localStorage.getItem('token');
       if (token) {
         try {
-          const response = await axios.get('http://localhost:5000/user/verify', {
+          const response = await axios.get('http://127.0.0.1:5000/user/verify', {
             headers: {
               Authorization: `Bearer ${token}`
             }
