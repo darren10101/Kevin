@@ -1,6 +1,7 @@
 import { useContext, useEffect, useRef, useState, forwardRef, useImperativeHandle } from "react"
 import { KevinContext } from "../contexts/KevinContext"
 import axios from "axios"
+import { prettifyHtml, prettifyCss } from "../utils/format"
 
 const Kevin = forwardRef((props, ref) => {
 
@@ -28,8 +29,8 @@ const Kevin = forwardRef((props, ref) => {
                 const response = await axios.post('http://127.0.0.1:5000/llm/generate', params);
                 if (response.status === 200) {
                     console.log(response.data);
-                    setHtmlString(response.data.result.HTML);
-                    setCssString(response.data.result.CSS);
+                    setHtmlString(prettifyHtml(response.data.result.HTML));
+                    setCssString(prettifyCss(response.data.result.CSS));
                 }
               } 
             catch (error) {
