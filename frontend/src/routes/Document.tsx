@@ -182,7 +182,11 @@ const Document = () => {
 
 
   
-return <main className={styles.main}>
+  return <>
+  <div className={styles.describe} onClick = {injectHtml2Canvas}>
+    Describe with Kevin
+  </div>
+  <main className={styles.main}>
     <div className={styles.editor}>
       <h3>HTML</h3>
       <div>
@@ -196,7 +200,6 @@ return <main className={styles.main}>
       </div>
     </div>
     <div className={fullscreen?styles.fullscreen:styles.preview}>
-        <button onClick = {injectHtml2Canvas}>test</button>
       <iframe
         srcDoc={`
           <html>
@@ -237,7 +240,8 @@ return <main className={styles.main}>
       </g>
       </svg>
     </div>
-  </main>;
+  </main>
+  </>;
 }
 
 export default Document;

@@ -1,67 +1,58 @@
-import {
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-  forwardRef,
-  useImperativeHandle,
-} from "react";
-import { KevinContext } from "../contexts/KevinContext";
-import axios from "axios";
+import { useContext, useEffect, useRef, useState, forwardRef, useImperativeHandle } from "react"
+import { KevinContext } from "../contexts/KevinContext"
+import axios from "axios"
+import { prettifyHtml, prettifyCss } from "../utils/format"
 
 const Kevin = forwardRef((props, ref) => {
-  // ==================== Voice Recognition ====================
-  const [transcript, setTranscript] = useState<string>("");
-  const [listening, setListening] = useState<boolean>(false);
-  const [isCapturing, setIsCapturing] = useState<boolean>(false);
-  const isCapturingRef = useRef(isCapturing);
-  const listeningRef = useRef(listening);
-  const {
-    htmlString,
-    setHtmlString,
-    cssString,
-    setCssString,
-    promptString,
-    setPromptString,
-  } = useContext(KevinContext);
 
-  // SpeechRecognition instance, defined as optional since not all browsers support it
-  let recognition: SpeechRecognition | null = null;
+    // ==================== Voice Recognition ====================
+    const [transcript, setTranscript] = useState<string>("")
+    const [listening, setListening] = useState<boolean>(false)
+    const [firstTime, setFirstTime] = useState<boolean>(true)
+    const [isCapturing, setIsCapturing] = useState<boolean>(false)
+    const isCapturingRef = useRef(isCapturing)
+    const listeningRef = useRef(listening)
+    const {htmlString, setHtmlString, cssString, setCssString, promptString, setPromptString} = useContext(KevinContext);
 
-  useEffect(() => {
-    setPromptString(transcript);
-    const params = {
-      prompt: transcript,
-      old_html: htmlString,
-      old_css: cssString,
-    };
-    console.log("PARAMS----", params);
-    const sendGenerationRequest = async () => {
-      try {
-        const response = await axios.post(
-          "http://127.0.0.1:5000/llm/generate",
-          params
-        );
-        if (response.status === 200) {
-          console.log(response.data);
-          setHtmlString(response.data.result.HTML);
-          setCssString(response.data.result.CSS);
+    // SpeechRecognition instance, defined as optional since not all browsers support it
+    let recognition: SpeechRecognition | null = null
+    
+    useEffect(() => {
+        setPromptString(transcript)
+        const params = {
+            prompt: transcript.replace("hey kevin", "").trim(),
+            old_html: htmlString,
+            old_css: cssString,
+        };
+        console.log("PARAMS----", params)
+        const sendGenerationRequest = async () => {
+            try {
+                const response = await axios.post('http://127.0.0.1:5000/llm/generate', params);
+                if (response.status === 200) {
+                    console.log(response.data);
+                    setHtmlString(prettifyHtml(response.data.result.HTML));
+                    setCssString(prettifyCss(response.data.result.CSS));
+                }
+              } 
+            catch (error) {
+                setTranscript("")
+                console.error('Error generating code:', error);
+            }
+        };
+
+        isCapturingRef.current = isCapturing
+        console.log("CAPTURE REF----", isCapturingRef.current)
+        console.log(transcript)
+        
+        if (isCapturing && firstTime) {
+            setFirstTime(false)
+        } else if (!isCapturing && !firstTime) {
+            sendGenerationRequest()
         }
-      } catch (error) {
-        console.error("Error generating code:", error);
-      }
-    };
-
-    isCapturingRef.current = isCapturing;
-    console.log("CAPTURE REF----", isCapturingRef.current);
-    console.log(transcript);
-
-    sendGenerationRequest();
-
-    if (!listeningRef.current) {
-      recognition?.stop();
-    }
-  }, [isCapturing]);
+        if (!listeningRef.current) {
+            recognition?.stop()
+        }
+    }, [isCapturing])
 
   useEffect(() => {
     listeningRef.current = listening;
@@ -102,24 +93,22 @@ const Kevin = forwardRef((props, ref) => {
           .toLowerCase()
           .trim();
 
-        if (transcriptPiece.includes("hey kevin")) {
-          transcriptPiece.replace("hey kevin", "");
-          setIsCapturing(true);
-        } else if (transcriptPiece.includes("thanks kevin")) {
-          setIsCapturing(false);
-        }
-        if (isCapturingRef.current) {
-          if (event.results[i].isFinal) {
-            setTranscript(
-              (prevTranscript) => prevTranscript + transcriptPiece + " "
-            );
-          } else {
-            interimTranscript += transcriptPiece;
-          }
-        }
-      }
-      console.log("Interim transcript: ", interimTranscript);
-    };
+                if (transcriptPiece.includes("hey kevin") && listeningRef.current) {
+                    transcriptPiece.replace("hey kevin", "")
+                    setIsCapturing(true)
+                } else if (transcriptPiece.includes("thanks kevin") && listeningRef.current) {
+                    setIsCapturing(false)
+                }
+                if (isCapturingRef.current) {
+                    if (event.results[i].isFinal) {
+                        setTranscript((prevTranscript) => prevTranscript + transcriptPiece + " ");
+                    } else {
+                        interimTranscript += transcriptPiece;
+                    }
+                }
+            }
+            console.log("Interim transcript: ", interimTranscript)
+        };
 
     // Restart recognition in case it stops automatically
     recognition.onend = () => {
