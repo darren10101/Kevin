@@ -80,11 +80,14 @@ def get_user():
     return jsonify({'message': 'No token provided'}), 401
 
 @user_routes.route('/get-programs', methods=['GET'])
-def protected():
-    if 'user' in session:
-        uid = session['user']
+def get_programs():
+    auth_header = request.headers.get('Authorization')
+    if auth_header and auth_header.startswith("Bearer "):
+        token = auth_header.split(' ')[1]
+        user = auth.get_account_info(token)
+        uid = user['users'][0]['localId']
         try:
-            programs = db.child("programs").order_by_child("user_id").equal_to(uid).get().val()
+            programs = db.child("programs").child(uid).get().val()
             return jsonify(programs), 200
         except Exception as e:
             return jsonify({'message': 'Error getting programs', 'error': str(e)}), 500
@@ -93,14 +96,16 @@ def protected():
 
 @user_routes.route('/get-program/<program_id>', methods=['GET'])
 def get_program(program_id):
-    if 'user' in session:
-        uid = session['user']
+    auth_header = request.headers.get('Authorization')
+    if auth_header and auth_header.startswith("Bearer "):
+        token = auth_header.split(' ')[1]
+        user = auth.get_account_info(token)
+        uid = user['users'][0]['localId']
         try:
-            program = db.child("programs").child(program_id).get().val()
-            if program and program['user_id'] == uid:
-                return jsonify(program), 200
-            else:
+            program = db.child("programs").child(uid).child(program_id).get().val()
+            if program is None:
                 return jsonify({'message': 'Program not found'}), 404
+            return jsonify(program), 200
         except Exception as e:
             return jsonify({'message': 'Error getting program', 'error': str(e)}), 500
     else:
@@ -108,39 +113,61 @@ def get_program(program_id):
 
 @user_routes.route('/create-program', methods=['POST'])
 def create_program():
-    if 'user' in session:
-        uid = session['user']
-        program = request.json
-        program['user_id'] = uid
+    auth_header = request.headers.get('Authorization')
+    if auth_header and auth_header.startswith("Bearer "):
+        token = auth_header.split(' ')[1]
+        user = auth.get_account_info(token)
+        uid = user['users'][0]['localId']
+        id = 1
         try:
-            db.child("programs").push(program)
+            last_program = db.child("programs").child(uid).order_by_key().get().val()
+            print(last_program)
+            id = len(last_program)
+            program = {
+                "user_id": uid,
+                "name": "Untitled Program",
+                "html": "",
+                "css": "",
+            }
+            db.child("programs").child(uid).child(id).push(program)
             return jsonify({'message': 'Program created successfully'}), 200
         except Exception as e:
             return jsonify({'message': 'Error creating program', 'error': str(e)}), 500
     else:
         return jsonify({'message': 'Unauthorized'}), 401
 
-@user_routes.route('/delete-program', methods=['POST'])
-def delete_program():
-    if 'user' in session:
-        uid = session['user']
-        program_id = request.json.get('program_id')
-        try:
-            db.child("programs").child(program_id).remove()
-            return jsonify({'message': 'Program deleted successfully'}), 200
-        except Exception as e:
-            return jsonify({'message': 'Error deleting program', 'error': str(e)}), 500
-    else:
-        return jsonify({'message': 'Unauthorized'}), 401
+# @user_routes.route('/delete-program', methods=['POST'])
+# def delete_program():
+#     if 'user' in session:
+#         uid = session['user']
+#         program_id = request.json.get('program_id')
+#         try:
+#             db.child("programs").child(program_id).remove()
+#             return jsonify({'message': 'Program deleted successfully'}), 200
+#         except Exception as e:
+#             return jsonify({'message': 'Error deleting program', 'error': str(e)}), 500
+#     else:
+#         return jsonify({'message': 'Unauthorized'}), 401
     
 @user_routes.route('/update-program', methods=['POST'])
 def update_program():
-    if 'user' in session:
-        uid = session['user']
-        program = request.json
-        program_id = program.get('program_id')
+    name = request.json.get('name')
+    html = request.json.get('html')
+    css = request.json.get('css')
+    id = request.json.get('id')
+    oid = request.json.get('oid')
+    auth_header = request.headers.get('Authorization')
+    if auth_header and auth_header.startswith("Bearer "):
+        token = auth_header.split(' ')[1]
+        user = auth.get_account_info(token)
+        uid = user['users'][0]['localId']
+        program = {
+            "name": name,
+            "html": html,
+            "css": css
+        }
         try:
-            db.child("programs").child(program_id).update(program)
+            db.child("programs").child(uid).child(id).child(oid).update(program)
             return jsonify({'message': 'Program updated successfully'}), 200
         except Exception as e:
             return jsonify({'message': 'Error updating program', 'error': str(e)}), 500
