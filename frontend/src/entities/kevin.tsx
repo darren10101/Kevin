@@ -23,8 +23,6 @@ const Kevin = forwardRef((props, ref) => {
     setCssString,
     promptString,
     setPromptString,
-    afterVoice,
-    setAfterVoice,
   } = useContext(KevinContext);
 
   // SpeechRecognition instance, defined as optional since not all browsers support it
@@ -48,7 +46,6 @@ const Kevin = forwardRef((props, ref) => {
           console.log(response.data);
           setHtmlString(response.data.result.HTML);
           setCssString(response.data.result.CSS);
-          setAfterVoice(true);
         }
       } catch (error) {
         console.error("Error generating code:", error);

@@ -22,7 +22,6 @@ const Document = () => {
 
   const [loading, setLoading] = useState(false);
 
-  const { afterVoice, setAfterVoice, describe, setDescribe } = useContext(KevinContext);
 
   const getAudioFromText = async (text: string) => {
     setLoading(true);
@@ -85,7 +84,6 @@ const Document = () => {
                   { image: imgData }
                 );
                 await getAudioFromText(imageDescription.data.result);
-                setAfterVoice(false);
               } catch (e) {
                 console.log("server error");
               }
@@ -111,21 +109,11 @@ const Document = () => {
     }
   };
 
-  setDescribe(injectHtml2Canvas);
+
   const handleGenerateAudio = () => {
     const text = "this is a test"; // Example text
     getAudioFromText(text);
   };
-
-  useEffect(() => {
-
-    if (afterVoice) {
-      injectHtml2Canvas();
-      setAfterVoice(false);
-    }
-  }, [afterVoice]);
-
-  
 
   useEffect(() => {
     const getProject = async () => {

@@ -10,11 +10,6 @@ export const KevinContext = createContext({
   nameString: "Untitled Program",
   setNameString: (nameString: string) => {},
   afterVoice: false,
-  setAfterVoice: (afterVoice: boolean) => {},
-  previewRef: null,
-  setPreviewRef: (previewRef: any) => {},
-  describe: null,
-  setDescribe: (describe: any) => {},
 });
 
 export const KevinProvider = ({ children }) => {
@@ -23,9 +18,6 @@ export const KevinProvider = ({ children }) => {
   const [promptString, setPromptString] = useState("");
   const [nameString, setNameString] = useState("");
   const [afterVoice, setAfterVoice] = useState(false);
-  const previewRef = useRef<HTMLIFrameElement>(null);
-  
-  const [describe, setDescribe] = useState(() => {});
 
   const value = {
     htmlString,
@@ -38,9 +30,6 @@ export const KevinProvider = ({ children }) => {
     setNameString,
     afterVoice,
     setAfterVoice,
-    previewRef,
-    describe,
-    setDescribe
   };
 
   return (

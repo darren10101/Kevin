@@ -21,7 +21,6 @@ const Home = () => {
   const previewRef = useRef<HTMLIFrameElement>(null);
   const [loading, setLoading] = useState(false);
 
-  const { afterVoice, setAfterVoice, setDescribe} = useContext(KevinContext);
 
   const getAudioFromText = async (text: string) => {
     setLoading(true);
@@ -100,7 +99,6 @@ const Home = () => {
     }
   };
 
-  setDescribe
 
   const handleGenerateAudio = () => {
     const text = ""; // Example text
@@ -115,17 +113,11 @@ const Home = () => {
         { image: imageData }
       );
       await getAudioFromText(imageDescription.data.result);
-      setAfterVoice(false);
     } catch (e) {
       console.log("server error");
     }
   };
 
-  useEffect(() => {
-    if (afterVoice) {
-      handleImageDescription();
-    }
-  }, [afterVoice]);
 
   return (
     <main className={styles.main}>
