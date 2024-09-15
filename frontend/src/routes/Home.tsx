@@ -1,9 +1,11 @@
 import { useState, useRef, useEffect } from "react";
 import Editor from "@components/Editor";
 import styles from "./Home.module.scss";
+import { ElevenLabsClient, play } from "elevenlabs";
+import process from "process";
 
 //screenshot variables
-import html2canvas from "html2canvas";
+//import html2canvas from "html2canvas";
 
 declare global {
   interface Window {
@@ -16,6 +18,46 @@ const Home = () => {
   const [css, setCSS] = useState("");
   const [fullscreen, setFullscreen] = useState(false);
   const previewRef = useRef<HTMLIFrameElement>(null);
+  const [loading, setLoading] = useState(false);
+
+  const getAudioFromText = async (text: string) => {
+    setLoading(true);
+
+    try {
+      // Send POST request to Flask API
+      const response = await fetch("http://127.0.0.1:5000/tts/generate-audio", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ text }), // Send the text as JSON
+      });
+
+      // Check if the response is successful
+      if (response.ok) {
+        // Get the audio data as a blob
+        const audioBlob = await response.blob();
+
+        // Create a URL for the blob
+        const audioUrl = window.URL.createObjectURL(audioBlob);
+
+        // Create an audio element and play the audio
+        const audio = new Audio(audioUrl);
+        audio.play();
+      } else {
+        console.error("Error generating audio:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    } finally {
+      setLoading(false); // Stop loading spinner or status
+    }
+  };
+
+  const handleGenerateAudio = () => {
+    const text = ""; // Example text
+    getAudioFromText(text);
+  };
 
   const injectHtml2Canvas = async () => {
     if (previewRef.current && previewRef.current.contentWindow) {
@@ -58,6 +100,8 @@ const Home = () => {
     }
   };
 
+  process;
+
   return (
     <main className={styles.main}>
       <div className={styles.editor}>
@@ -73,7 +117,8 @@ const Home = () => {
         </div>
       </div>
       <div className={fullscreen ? styles.fullscreen : styles.preview}>
-        <button onClick={injectHtml2Canvas}></button>
+        <button onClick={injectHtml2Canvas}> Screenshot</button>
+        <button onClick={handleGenerateAudio}> Voice Demo</button>
         <iframe
           srcDoc={`
           <html>
@@ -86,6 +131,7 @@ const Home = () => {
           </html>
             
         `}
+          ref={previewRef}
         />
         <svg
           height="80px"

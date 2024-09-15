@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, session
+from flask import Blueprint, request, jsonify, session, send_file
 from settings import Settings
 from llm.generation import GroqGenerator
 from llm.prompts import Prompts
@@ -25,3 +25,5 @@ def describe():
     base64_image = request.json.get('image')
     res = groq_generator.describe(base64_image)
     return jsonify({'result': res}), 200
+
+
