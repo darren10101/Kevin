@@ -15,6 +15,8 @@ const Kevin = forwardRef((props, ref) => {
     useEffect(() => {
         isCapturingRef.current = isCapturing
         console.log("CAPTURE REF----", isCapturingRef.current)
+        console.log(transcript)
+        // TODO: add api calls here
         if (!listeningRef.current) {
             recognition?.stop()
         }
