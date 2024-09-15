@@ -9,11 +9,11 @@ const Document = () => {
 
   useEffect(() => {
     const handleKeyDown = (event: any) => {
-      event.preventDefault();
       const code = event.which || event.keyCode;
 
       let charCode = String.fromCharCode(code).toLowerCase();
       if ((event.ctrlKey || event.metaKey) && charCode === 's') {
+        event.preventDefault();
         alert('Project Saved');
       }
     };
