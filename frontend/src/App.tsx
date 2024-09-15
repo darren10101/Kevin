@@ -9,7 +9,7 @@ function App() {
   const location = useLocation()
   const [showNavbar, setShowNavbar] = useState(true)
   const [path, setPath] = useState('')
-  const [user, setUser] = useState(true)
+  const [user, setUser] = useState(false)
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -21,15 +21,19 @@ function App() {
               Authorization: `Bearer ${token}`
             }
           });
-          if (response.status != 200) {
-            setUser(false)
+          if (response.status === 200) {
+            setUser(true);
+          } else {
+            setUser(false);
           }
         } catch (error) {
+          setUser(false);
           console.error('Error verifying token:', error);
         }
       }
     };
     checkAuth();
+    console.log(user);
   }, []);
 
   useEffect(() => {

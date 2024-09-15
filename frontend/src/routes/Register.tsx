@@ -23,7 +23,7 @@ const Register = () => {
             }
           });
           if (response.status === 200) {
-            navigate('/dashboard');
+            window.location.reload();
           }
         } catch (error) {
           console.error('Error verifying token:', error);
