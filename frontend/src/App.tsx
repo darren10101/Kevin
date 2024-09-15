@@ -11,29 +11,31 @@ function App() {
     const [showNavbar, setShowNavbar] = useState(true)
     const [path, setPath] = useState('')
     const [user, setUser] = useState(false)
+    const [loading, setLoading] = useState(true)
 
-    useEffect(() => {
-        const checkAuth = async () => {
-            const token = localStorage.getItem('token');
-            if (token) {
-                try {
-                    const response = await axios.get('http://127.0.0.1:5000/user/verify', {
-                        headers: {
-                            Authorization: `Bearer ${token}`
-                        }
-                    });
-                    if (response.status === 200) {
-                        setUser(true);
-                    } else {
-                        setUser(false);
+    const checkAuth = async () => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            try {
+                const response = await axios.get('http://localhost:5000/user/verify', {
+                    headers: {
+                        Authorization: `Bearer ${token}`
                     }
-                } catch (error) {
+                });
+                if (response.status === 200) {
+                    setUser(true);
+                } else {
                     setUser(false);
-                    console.error('Error verifying token:', error);
                 }
+            } catch (error) {
+                setUser(false);
+                console.error('Error verifying token:', error);
             }
-        };
-        checkAuth();
+        }
+    };
+    useEffect(() => {
+        checkAuth().then(() => setLoading(false));
+        console.log(user);
     }, []);
 
     useEffect(() => {
@@ -55,8 +57,10 @@ function App() {
     };
     return <>
         {showNavbar && <Navbar path={path} toggleKevin={handleToggleListening} />}
-        <Routes signedIn={user} />
-        <Kevin ref={kevinRef}/>
+        {
+            loading ? <></> : <Routes signedIn={user} />
+        }
+        <Kevin ref={kevinRef} />
     </>
 }
 
